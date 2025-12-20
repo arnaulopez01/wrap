@@ -20,7 +20,7 @@
             <span class="font-bold tracking-tighter text-xl">DIGITAL<span class="text-purple-500">WRAP</span></span>
         </div>
         <div class="flex items-center gap-4">
-            <select id="product-selector" class="bg-slate-800 border border-purple-500/30 text-xs rounded-lg px-3 py-1 text-purple-300">
+            <select id="product-selector" class="bg-slate-800 border border-purple-500/30 text-[10px] md:text-xs rounded-lg px-2 py-1 text-purple-300 focus:outline-none focus:border-purple-500">
                 <option value="quiz">QUIZ WRAP - 0,99€</option>
                 <option value="gymkhana">GYMKHANA - 1,49€</option>
                 <option value="escape">MINI ESCAPE - 1,99€</option>
@@ -28,8 +28,8 @@
         </div>
     </header>
 
-    <div class="flex flex-1 overflow-hidden">
-        <main class="w-full md:w-1/2 flex flex-col relative bg-gradient-to-b from-[#0F172A] to-[#111827]">
+    <div class="flex flex-1 overflow-hidden relative">
+        <main id="chat-section" class="w-full md:w-1/2 flex flex-col relative bg-gradient-to-b from-[#0F172A] to-[#111827]">
             <div id="chat-window" class="flex-1 overflow-y-auto p-6 md:p-10 space-y-8">
                 <div class="flex justify-start animate-msg">
                     <div class="bubble bubble-ai">
@@ -40,7 +40,7 @@
 
             <div class="p-6 bg-[#0F172A] border-t border-white/5">
                 <div class="max-w-2xl mx-auto relative group">
-                    <input type="text" id="user-input" class="w-full bg-slate-800/50 border border-white/10 rounded-2xl py-4 pl-6 pr-14 focus:outline-none focus:border-purple-500 transition-all text-sm" placeholder="Escribe tu idea aquí...">
+                    <input type="text" id="user-input" class="w-full bg-slate-800/50 border border-white/10 rounded-2xl py-4 pl-6 pr-14 focus:outline-none focus:border-purple-500 transition-all text-sm text-white" placeholder="Escribe tu idea aquí...">
                     <button onclick="send()" class="absolute right-3 top-2.5 w-10 h-10 bg-purple-600 hover:bg-purple-500 rounded-xl flex items-center justify-center shadow-lg shadow-purple-900/40">
                         <i class="fa-solid fa-paper-plane text-white text-sm"></i>
                     </button>
@@ -48,7 +48,7 @@
             </div>
         </main>
 
-        <aside class="hidden md:flex w-1/2 bg-[#020617] p-10 flex-col relative">
+        <aside id="preview-section" class="hidden md:flex w-full md:w-1/2 bg-[#020617] p-10 flex-col relative">
             <div class="flex items-center gap-2 mb-8">
                 <i class="fa-solid fa-wand-magic-sparkles text-purple-500 text-sm"></i>
                 <h2 class="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Live Experience Preview</h2>
@@ -56,11 +56,15 @@
             
             <div id="game-preview" class="flex-1 glass-panel rounded-[2rem] p-10 flex flex-col items-center justify-center text-center overflow-hidden">
                 <div class="opacity-20 flex flex-col items-center">
-                    <i class="fa-solid fa-box-open text-5xl mb-6"></i>
-                    <p class="text-sm max-w-[200px]">Describe tu regalo para visualizar el juego aquí</p>
+                    <i class="fa-solid fa-box-open text-5xl mb-6 text-white"></i>
+                    <p class="text-sm max-w-[200px] text-white">Describe tu regalo para visualizar el juego aquí</p>
                 </div>
             </div>
         </aside>
+
+        <button id="mobile-toggle-btn" onclick="toggleMobileView()" class="md:hidden fixed bottom-28 right-6 z-50 bg-purple-600 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center border-2 border-white/20 transition-all active:scale-90">
+            <i class="fa-solid fa-eye"></i>
+        </button>
     </div>
 
     <script src="{{ url_for('static', filename='js/creator.js') }}"></script>

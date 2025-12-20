@@ -10,40 +10,32 @@
     border-radius: 10px; 
 }
 
-/* Burbujas de chat */
+/* Burbujas */
 .bubble { 
     max-width: 85%; 
     padding: 1.25rem; 
     border-radius: 1.5rem; 
     line-height: 1.6; 
     font-size: 0.95rem; 
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2); 
 }
 
 .bubble-user { 
     background: linear-gradient(135deg, #7C3AED, #5B21B6); 
-    color: white; 
     border-bottom-right-radius: 0.25rem; 
 }
 
 .bubble-ai { 
     background-color: #1E293B; 
     border: 1px solid rgba(255, 255, 255, 0.05); 
-    color: #E2E8F0; 
     border-bottom-left-radius: 0.25rem; 
 }
 
-/* Contenido Markdown */
-.markdown-content h1, 
-.markdown-content h2, 
-.markdown-content h3 { 
-    color: #A78BFA; 
-    font-weight: 700; 
-    margin-top: 1rem; 
-    margin-bottom: 0.5rem; 
-}
+/* Markdown */
+.markdown-content h3 { color: #A78BFA; font-weight: 700; margin: 1rem 0 0.5rem 0; }
+.markdown-content p { margin-bottom: 0.75rem; }
 
-/* Panel de previsualización */
+/* Panel Preview */
 .glass-panel { 
     background: rgba(30, 41, 59, 0.4); 
     backdrop-filter: blur(12px); 
@@ -55,7 +47,9 @@
     from { opacity: 0; transform: translateY(15px); } 
     to { opacity: 1; transform: translateY(0); } 
 }
+.animate-msg { animation: fadeInUp 0.4s ease-out forwards; }
 
-.animate-msg { 
-    animation: fadeInUp 0.4s ease-out forwards; 
+/* Responsive */
+@media (max-width: 768px) {
+    #chat-window { padding-bottom: 100px; }
 }
