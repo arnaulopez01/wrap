@@ -4,28 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diseñador | Digital Wrap Experiences</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@300;400;600&display=swap');
-
-        body { font-family: 'Inter', sans-serif; background-color: #0F172A; color: #F8FAFC; }
-        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
-
-        #chat-window::-webkit-scrollbar, .custom-scroll::-webkit-scrollbar { width: 5px; }
-        #chat-window::-webkit-scrollbar-thumb, .custom-scroll::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 10px; }
-
-        .bubble { max-width: 85%; padding: 1.25rem; border-radius: 1.5rem; line-height: 1.6; font-size: 0.95rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-        .bubble-user { background: linear-gradient(135deg, #7C3AED, #5B21B6); color: white; border-bottom-right-radius: 0.25rem; }
-        .bubble-ai { background-color: #1E293B; border: 1px solid rgba(255, 255, 255, 0.05); color: #E2E8F0; border-bottom-left-radius: 0.25rem; }
-
-        .markdown-content h1, .markdown-content h2, .markdown-content h3 { color: #A78BFA; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; }
-        .glass-panel { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
-
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-msg { animation: fadeInUp 0.4s ease-out forwards; }
-    </style>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/creator.css') }}">
 </head>
 <body class="h-screen flex flex-col overflow-hidden">
 
@@ -75,86 +60,6 @@
         </aside>
     </div>
 
-    <script>
-        const chatWindow = document.getElementById('chat-window');
-        const input = document.getElementById('user-input');
-        const preview = document.getElementById('game-preview');
-        const statusTag = document.getElementById('status-tag');
-        let currentGamedata = null;
-
-        async function send() {
-            const text = input.value.trim();
-            if (!text) return;
-            renderMessage(text, 'user');
-            input.value = '';
-
-            try {
-                const res = await fetch('/chat', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({message: text})
-                });
-                const data = await res.json();
-                renderMessage(data.reply, 'model');
-            } catch (e) { console.error(e); }
-        }
-
-        function renderMessage(text, role) {
-            const parts = text.split('###JSON_DATA###');
-            const chatText = parts[0].trim();
-            const jsonPart = parts[1] ? parts[1].trim() : null;
-
-            const wrapper = document.createElement('div');
-            wrapper.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'} animate-msg w-full`;
-            wrapper.innerHTML = `<div class="bubble ${role === 'user' ? 'bubble-user' : 'bubble-ai'}"><div class="markdown-content">${marked.parse(chatText)}</div></div>`;
-            
-            chatWindow.appendChild(wrapper);
-            chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
-
-            if (jsonPart && role === 'model') updatePreview(jsonPart);
-        }
-
-        function updatePreview(jsonStr) {
-            try {
-                const cleanJson = jsonStr.replace(/```json|```/g, '').trim();
-                currentGamedata = JSON.parse(cleanJson);
-                statusTag.classList.remove('hidden');
-                
-                let stepsHtml = currentGamedata.steps.map((s, i) => `
-                    <div class="bg-white/5 border border-white/5 p-5 rounded-2xl mb-4 text-left">
-                        <span class="text-[10px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-md font-bold uppercase">Reto 0${i+1}</span>
-                        <p class="text-sm text-slate-200 mt-2 font-medium">${s.question}</p>
-                        <p class="text-xs text-green-400 font-bold mt-2 font-mono">Respuesta: ${s.answer}</p>
-                    </div>
-                `).join('');
-
-                preview.innerHTML = `
-                    <div class="w-full h-full flex flex-col text-left">
-                        <h3 class="text-2xl font-bold text-white mb-2">${currentGamedata.title}</h3>
-                        <div class="flex-1 overflow-y-auto pr-2 custom-scroll">${stepsHtml}</div>
-                        <button onclick="finalize()" class="mt-8 w-full bg-white text-black py-4 rounded-2xl font-bold hover:bg-purple-500 hover:text-white transition-all shadow-xl">
-                            CREAR JUEGO E INTERACTUAR
-                        </button>
-                    </div>
-                `;
-                preview.classList.remove('justify-center', 'items-center', 'text-center');
-            } catch (e) { console.error("JSON incompleto"); }
-        }
-
-        async function finalize() {
-            const gift = prompt("Escribe tu regalo aquí (ej: 2 entradas a PortAventura):");
-            if (!gift) return;
-
-            const res = await fetch('/save_experience', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ game_data: currentGamedata, real_gift: gift })
-            });
-            const result = await res.json();
-            if (result.success) window.location.href = `/experience/${result.game_id}`;
-        }
-
-        input.addEventListener('keypress', (e) => { if(e.key === 'Enter') send(); });
-    </script>
+    <script src="{{ url_for('static', filename='js/creator.js') }}"></script>
 </body>
 </html>

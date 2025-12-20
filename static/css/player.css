@@ -1,0 +1,15 @@
+/* Estilos específicos para el contenedor del juego */
+#game-container {
+    transition: all 0.5s ease-in-out;
+}
+
+/* Ajuste para que el input se vea consistente en móviles */
+#answer-input {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+/* Animación de entrada para el área de recompensa */
+#reward-area.animate-bounce {
+    animation-duration: 2s;
+}

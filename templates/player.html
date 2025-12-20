@@ -1,17 +1,27 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playing Wrap | Digital Wrap</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/player.css') }}">
 </head>
 <body class="bg-[#0F172A] text-white flex items-center justify-center min-h-screen p-6">
+
     <div id="game-container" class="max-w-md w-full bg-[#1E293B] p-8 rounded-[2.5rem] shadow-2xl border border-white/10">
         <div id="quiz-area">
             <h1 id="game-title" class="text-2xl font-bold mb-6 text-purple-400"></h1>
             <div id="question-box" class="space-y-6">
                 <p id="question-text" class="text-lg font-medium"></p>
                 <input type="text" id="answer-input" class="w-full bg-slate-800 border border-white/10 rounded-xl py-3 px-4 focus:outline-none focus:border-purple-500" placeholder="Tu respuesta...">
-                <button onclick="checkAnswer()" class="w-full bg-purple-600 py-4 rounded-xl font-bold uppercase tracking-wider">Verificar</button>
+                <button onclick="checkAnswer()" class="w-full bg-purple-600 py-4 rounded-xl font-bold uppercase tracking-wider hover:bg-purple-500 transition-colors">
+                    Verificar
+                </button>
             </div>
         </div>
 
@@ -25,40 +35,13 @@
         </div>
     </div>
 
+    <script src="{{ url_for('static', filename='js/player.js') }}"></script>
     <script>
-        const gameData = {{ game_data | safe }};
-        const realGift = "{{ real_gift }}";
-        let currentStep = 0;
-
-        function loadStep() {
-            document.getElementById('game-title').innerText = gameData.title;
-            document.getElementById('question-text').innerText = gameData.steps[currentStep].question;
-        }
-
-        function checkAnswer() {
-            const userAns = document.getElementById('answer-input').value.toLowerCase().trim();
-            const correctAns = gameData.steps[currentStep].answer.toLowerCase().trim();
-
-            if (userAns === correctAns) {
-                currentStep++;
-                document.getElementById('answer-input').value = "";
-                if (currentStep < gameData.steps.length) {
-                    loadStep();
-                } else {
-                    showReward();
-                }
-            } else {
-                alert("¡Respuesta incorrecta! Inténtalo de nuevo.");
-            }
-        }
-
-        function showReward() {
-            document.getElementById('quiz-area').classList.add('hidden');
-            document.getElementById('reward-area').classList.remove('hidden');
-            document.getElementById('final-gift').innerText = realGift;
-        }
-
-        loadStep();
+        // Inyectamos los datos de Flask y arrancamos el juego
+        const dataFromServer = {{ game_data | safe }};
+        const giftFromServer = "{{ real_gift }}";
+        
+        initPlayer(dataFromServer, giftFromServer);
     </script>
 </body>
 </html>
