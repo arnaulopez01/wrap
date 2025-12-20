@@ -1,0 +1,24 @@
+<svg height="40" viewBox="0 0 160 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style type="text/css">
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@700&amp;display=swap');
+      .logo-text {
+        font-family: 'Inter', sans-serif;
+        font-weight: 700;
+        font-size: 24px;
+        letter-spacing: -0.05em;
+        text-transform: uppercase;
+      }
+    </style>
+  </defs>
+  
+  <text 
+    x="50%" 
+    y="50%" 
+    class="logo-text" 
+    text-anchor="middle" 
+    dominant-baseline="middle"
+  >
+    <tspan fill="#FFFFFF">DIGITAL</tspan><tspan fill="#A855F7">WRAP</tspan>
+  </text>
+</svg>

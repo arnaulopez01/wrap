@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diseñador | Digital Wrap Experiences</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@300;400;600&display=swap');
+
+        body { font-family: 'Inter', sans-serif; background-color: #0F172A; color: #F8FAFC; }
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
+
+        #chat-window::-webkit-scrollbar, .custom-scroll::-webkit-scrollbar { width: 5px; }
+        #chat-window::-webkit-scrollbar-thumb, .custom-scroll::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 10px; }
+
+        .bubble { max-width: 85%; padding: 1.25rem; border-radius: 1.5rem; line-height: 1.6; font-size: 0.95rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .bubble-user { background: linear-gradient(135deg, #7C3AED, #5B21B6); color: white; border-bottom-right-radius: 0.25rem; }
+        .bubble-ai { background-color: #1E293B; border: 1px solid rgba(255, 255, 255, 0.05); color: #E2E8F0; border-bottom-left-radius: 0.25rem; }
+
+        .markdown-content h1, .markdown-content h2, .markdown-content h3 { color: #A78BFA; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; }
+        .glass-panel { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-msg { animation: fadeInUp 0.4s ease-out forwards; }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+
+    <header class="h-16 border-b border-white/5 flex items-center justify-between px-8 bg-[#0F172A]/80 backdrop-blur-md z-10">
+        <div class="flex items-center gap-4">
+            <a href="/" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-arrow-left text-lg"></i></a>
+            <span class="font-bold tracking-tighter text-xl">DIGITAL<span class="text-purple-500">WRAP</span></span>
+        </div>
+        <div class="flex items-center gap-4">
+            <span id="status-tag" class="hidden px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full text-[10px] text-green-400 font-bold uppercase tracking-wider">Listo</span>
+            <span class="hidden md:block text-[10px] text-slate-500 font-mono tracking-widest uppercase">Engine: Gemini 2.5 Flash</span>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <main class="w-full md:w-1/2 flex flex-col relative bg-gradient-to-b from-[#0F172A] to-[#111827]">
+            <div id="chat-window" class="flex-1 overflow-y-auto p-6 md:p-10 space-y-8">
+                <div class="flex justify-start animate-msg">
+                    <div class="bubble bubble-ai">
+                        <p>¡Hola! Soy tu arquitecto de experiencias. 🎁</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 bg-[#0F172A] border-t border-white/5">
+                <div class="max-w-2xl mx-auto relative group">
+                    <input type="text" id="user-input" class="w-full bg-slate-800/50 border border-white/10 rounded-2xl py-4 pl-6 pr-14 focus:outline-none focus:border-purple-500 transition-all text-sm" placeholder="Escribe tu idea aquí...">
+                    <button onclick="send()" class="absolute right-3 top-2.5 w-10 h-10 bg-purple-600 hover:bg-purple-500 rounded-xl flex items-center justify-center shadow-lg shadow-purple-900/40">
+                        <i class="fa-solid fa-paper-plane text-white text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <aside class="hidden md:flex w-1/2 bg-[#020617] p-10 flex-col relative">
+            <div class="flex items-center gap-2 mb-8">
+                <i class="fa-solid fa-wand-magic-sparkles text-purple-500 text-sm"></i>
+                <h2 class="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Live Experience Preview</h2>
+            </div>
+            
+            <div id="game-preview" class="flex-1 glass-panel rounded-[2rem] p-10 flex flex-col items-center justify-center text-center overflow-hidden">
+                <div class="opacity-20 flex flex-col items-center">
+                    <i class="fa-solid fa-box-open text-5xl mb-6"></i>
+                    <p class="text-sm max-w-[200px]">Describe tu regalo para visualizar el juego aquí</p>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        const chatWindow = document.getElementById('chat-window');
+        const input = document.getElementById('user-input');
+        const preview = document.getElementById('game-preview');
+        const statusTag = document.getElementById('status-tag');
+        let currentGamedata = null;
+
+        async function send() {
+            const text = input.value.trim();
+            if (!text) return;
+            renderMessage(text, 'user');
+            input.value = '';
+
+            try {
+                const res = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: text})
+                });
+                const data = await res.json();
+                renderMessage(data.reply, 'model');
+            } catch (e) { console.error(e); }
+        }
+
+        function renderMessage(text, role) {
+            const parts = text.split('###JSON_DATA###');
+            const chatText = parts[0].trim();
+            const jsonPart = parts[1] ? parts[1].trim() : null;
+
+            const wrapper = document.createElement('div');
+            wrapper.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'} animate-msg w-full`;
+            wrapper.innerHTML = `<div class="bubble ${role === 'user' ? 'bubble-user' : 'bubble-ai'}"><div class="markdown-content">${marked.parse(chatText)}</div></div>`;
+            
+            chatWindow.appendChild(wrapper);
+            chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
+
+            if (jsonPart && role === 'model') updatePreview(jsonPart);
+        }
+
+        function updatePreview(jsonStr) {
+            try {
+                const cleanJson = jsonStr.replace(/```json|```/g, '').trim();
+                currentGamedata = JSON.parse(cleanJson);
+                statusTag.classList.remove('hidden');
+                
+                let stepsHtml = currentGamedata.steps.map((s, i) => `
+                    <div class="bg-white/5 border border-white/5 p-5 rounded-2xl mb-4 text-left">
+                        <span class="text-[10px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-md font-bold uppercase">Reto 0${i+1}</span>
+                        <p class="text-sm text-slate-200 mt-2 font-medium">${s.question}</p>
+                        <p class="text-xs text-green-400 font-bold mt-2 font-mono">Respuesta: ${s.answer}</p>
+                    </div>
+                `).join('');
+
+                preview.innerHTML = `
+                    <div class="w-full h-full flex flex-col text-left">
+                        <h3 class="text-2xl font-bold text-white mb-2">${currentGamedata.title}</h3>
+                        <div class="flex-1 overflow-y-auto pr-2 custom-scroll">${stepsHtml}</div>
+                        <button onclick="finalize()" class="mt-8 w-full bg-white text-black py-4 rounded-2xl font-bold hover:bg-purple-500 hover:text-white transition-all shadow-xl">
+                            CREAR JUEGO E INTERACTUAR
+                        </button>
+                    </div>
+                `;
+                preview.classList.remove('justify-center', 'items-center', 'text-center');
+            } catch (e) { console.error("JSON incompleto"); }
+        }
+
+        async function finalize() {
+            const gift = prompt("Escribe tu regalo aquí (ej: 2 entradas a PortAventura):");
+            if (!gift) return;
+
+            const res = await fetch('/save_experience', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ game_data: currentGamedata, real_gift: gift })
+            });
+            const result = await res.json();
+            if (result.success) window.location.href = `/experience/${result.game_id}`;
+        }
+
+        input.addEventListener('keypress', (e) => { if(e.key === 'Enter') send(); });
+    </script>
+</body>
+</html>
