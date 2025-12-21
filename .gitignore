@@ -1,3 +1,4 @@
 .env
 /venv
 prompts.txt
+docker-compose.yml
