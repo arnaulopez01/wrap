@@ -1,55 +1,234 @@
-/* Scrollbars personalizados */
-#chat-window::-webkit-scrollbar, 
-.custom-scroll::-webkit-scrollbar { 
-    width: 5px; 
+/* --- CONFIGURACIÓN Y VARIABLES --- */
+:root {
+    --accent: #7C3AED;
+    --purple-light: #A78BFA; /* Color exacto del player.html */
+    --bg-dark: #0F172A;
+    --bg-card: #1E293B;
+    --gold: #FBBF24;
 }
 
-#chat-window::-webkit-scrollbar-thumb, 
-.custom-scroll::-webkit-scrollbar-thumb { 
-    background: #1E293B; 
-    border-radius: 10px; 
+* {
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: #334155 transparent;
 }
 
-/* Burbujas */
-.bubble { 
-    max-width: 85%; 
-    padding: 1.25rem; 
-    border-radius: 1.5rem; 
-    line-height: 1.6; 
-    font-size: 0.95rem; 
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2); 
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+
+body {
+    background-color: var(--bg-dark);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #E2E8F0;
+    overflow: hidden;
 }
 
-.bubble-user { 
-    background: linear-gradient(135deg, #7C3AED, #5B21B6); 
-    border-bottom-right-radius: 0.25rem; 
+/* --- CHAT BUBBLES --- */
+.bubble {
+    max-width: 85%;
+    padding: 1rem 1.25rem;
+    border-radius: 1.5rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.bubble-ai { 
-    background-color: #1E293B; 
-    border: 1px solid rgba(255, 255, 255, 0.05); 
-    border-bottom-left-radius: 0.25rem; 
+.bubble-user {
+    background: linear-gradient(135deg, var(--accent), #5B21B6);
+    color: white;
+    border-bottom-right-radius: 0.25rem;
 }
 
-/* Markdown */
-.markdown-content h3 { color: #A78BFA; font-weight: 700; margin: 1rem 0 0.5rem 0; }
-.markdown-content p { margin-bottom: 0.75rem; }
-
-/* Panel Preview */
-.glass-panel { 
-    background: rgba(30, 41, 59, 0.4); 
-    backdrop-filter: blur(12px); 
-    border: 1px solid rgba(255, 255, 255, 0.05); 
+.bubble-ai {
+    background-color: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom-left-radius: 0.25rem;
 }
 
-/* Animaciones */
-@keyframes fadeInUp { 
-    from { opacity: 0; transform: translateY(15px); } 
-    to { opacity: 1; transform: translateY(0); } 
+/* --- EDITOR WYSIWYG (ESTILO PLAYER.HTML) --- */
+.glass-panel {
+    background: rgba(30, 41, 59, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
-.animate-msg { animation: fadeInUp 0.4s ease-out forwards; }
 
-/* Responsive */
+/* Estilos de texto sincronizados con el Player */
+#game-preview textarea, 
+#game-preview input {
+    background: transparent;
+    border: none;
+    width: 100%;
+    outline: none;
+    resize: none;
+    overflow: hidden;
+}
+
+#title-input, 
+#level-title-input {
+    color: var(--purple-light);
+    font-weight: 700;
+}
+
+#question-area {
+    color: #FFFFFF;
+    font-weight: 500;
+}
+
+/* --- ZONAS EDITABLES (INDICADORES DE USABILIDAD) --- */
+.editable-zone {
+    position: relative; /* Clave para posicionar el lápiz */
+    padding: 12px;
+    border: 1px solid transparent;
+    border-radius: 16px;
+    transition: background 0.2s, border-color 0.2s;
+    cursor: text;
+}
+
+/* El icono del lápiz: visible pero sutil por defecto */
+.editable-zone .fa-pencil {
+    opacity: 0.4; 
+    transition: all 0.2s ease;
+}
+
+.editable-zone:hover {
+    background: rgba(167, 139, 250, 0.04);
+    border-color: rgba(167, 139, 250, 0.2);
+}
+
+.editable-zone:hover .fa-pencil {
+    opacity: 1;
+    color: var(--purple-light);
+    transform: scale(1.1);
+}
+
+/* Indicador de texto "Editar..." */
+.edit-hint {
+    position: absolute;
+    bottom: -16px;
+    right: 12px;
+    font-size: 8px;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--purple-light);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.editable-zone:hover .edit-hint {
+    opacity: 0.6;
+}
+
+/* --- ELIMINAR ANIMACIONES DE TEXTO AL PASAR DIAPOSITIVAS --- */
+#game-preview, 
+#game-preview * {
+    animation: none !important; /* Bloquea cualquier fade-in o slide-in */
+    transition: font-size 0.05s linear; /* Solo permitimos el micro-ajuste del auto-shrink */
+}
+
+/* --- MODAL SELECTOR DE MÓDULOS --- */
+#module-overlay {
+    background: rgba(2, 6, 23, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+}
+
+.fa-lock.text-amber-400 {
+    color: var(--gold);
+    filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.5));
+}
+
+@keyframes pulse-gold {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.8; }
+}
+
+.animate-pulse {
+    animation: pulse-gold 2s infinite ease-in-out;
+}
+
+/* --- FOOTER SIMÉTRICO (h-24) --- */
+.h-24 {
+    height: 6rem; /* 96px fijos */
+}
+
+.border-t {
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* --- RESPONSIVE ORIGINAL --- */
 @media (max-width: 768px) {
-    #chat-window { padding-bottom: 100px; }
+    #chat-section {
+        width: 100% !important;
+    }
+
+    #preview-section {
+        width: 100% !important;
+        position: fixed;
+        top: 64px;
+        left: 0;
+        height: calc(100vh - 64px);
+        z-index: 40;
+        background-color: #020617;
+        padding: 1rem !important;
+    }
+
+    #preview-section.hidden {
+        display: none !important;
+    }
+
+    #preview-section.flex {
+        display: flex !important;
+    }
+
+    #mobile-toggle-btn {
+        z-index: 100;
+    }
+}
+
+/* Solo animamos los mensajes del chat cuando aparecen */
+#chat-window > div {
+    animation: fadeInUp 0.3s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- BLOQUEO DE ANIMACIONES EN PREVIEW --- */
+#game-preview, 
+#game-preview * {
+    animation: none !important;
+    transition: none !important; /* Evita que los textos "vuelen" al cambiar */
+}
+
+/* --- CONTENEDOR DE RESPUESTA (Estilo Player Exacto) --- */
+.input-mirror-container {
+    background: rgba(30, 41, 59, 0.5); /* bg-slate-800/50 */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Borde blanco sutil */
+    border-radius: 1rem; /* rounded-2xl */
+    padding: 1rem 1.5rem; /* py-4 px-6 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s ease !important; /* Solo permitimos esta transición */
+}
+
+.input-mirror-container:hover {
+    border-color: #7C3AED; /* El "morado" al pasar el ratón */
+}
+
+/* Respuesta en verde brillante */
+.answer-input-v {
+    color: #4ade80 !important; /* text-green-400 */
+    font-weight: 700;
+    text-align: center;
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
 }

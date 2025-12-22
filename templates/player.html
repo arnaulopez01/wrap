@@ -8,39 +8,64 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/player.css') }}">
-</head>
-<body class="bg-[#0F172A] text-white flex items-center justify-center min-h-screen p-6">
+    <style>
+        .animate-fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .animate-shake { animation: shake 0.4s ease-in-out; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
 
-    <div id="game-container" class="max-w-md w-full bg-[#1E293B] p-8 rounded-[2.5rem] shadow-2xl border border-white/10">
-        <div id="quiz-area">
-            <h1 id="game-title" class="text-2xl font-bold mb-6 text-purple-400"></h1>
-            <div id="question-box" class="space-y-6">
-                <p id="question-text" class="text-lg font-medium"></p>
-                <input type="text" id="answer-input" class="w-full bg-slate-800 border border-white/10 rounded-xl py-3 px-4 focus:outline-none focus:border-purple-500" placeholder="Tu respuesta...">
-                <button onclick="checkAnswer()" class="w-full bg-purple-600 py-4 rounded-xl font-bold uppercase tracking-wider hover:bg-purple-500 transition-colors">
-                    Verificar
-                </button>
-            </div>
+        body {
+            background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="text-white flex items-center justify-center min-h-screen p-6 overflow-hidden">
+
+    <div id="game-container" class="max-w-md w-full glass-card p-8 rounded-[3rem] shadow-2xl relative">
+        
+        <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
+            <i class="fa-solid fa-star text-white"></i>
         </div>
 
-        <div id="reward-area" class="hidden text-center space-y-6 animate-bounce">
-            <i class="fa-solid fa-gift text-6xl text-yellow-400"></i>
-            <h2 class="text-3xl font-bold">¡FELICIDADES!</h2>
-            <p class="text-xl text-slate-300">Tu regalo es:</p>
-            <div class="bg-white/10 p-6 rounded-2xl border-2 border-dashed border-yellow-400">
-                <span id="final-gift" class="text-2xl font-bold text-white"></span>
+        <div id="quiz-area">
             </div>
+
+        <div id="reward-area" class="hidden text-center space-y-8 animate-fade-in py-6">
+            <div class="space-y-2">
+                <i class="fa-solid fa-circle-check text-green-500 text-5xl mb-4"></i>
+                <h2 class="text-3xl font-black text-white uppercase tracking-tighter">¡LOGRADO!</h2>
+                <p class="text-slate-400 font-medium">Has superado todos los niveles.</p>
+            </div>
+
+            <div class="relative p-8 bg-white/5 rounded-3xl border-2 border-dashed border-yellow-500/50">
+                <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1E293B] px-4 text-[10px] font-bold text-yellow-500 uppercase tracking-widest">Tu Regalo</span>
+                <span id="final-gift" class="text-2xl font-bold text-white block"></span>
+            </div>
+
+            <button onclick="location.reload()" class="text-slate-500 text-xs font-bold uppercase tracking-widest hover:text-white transition-colors">
+                Ver de nuevo
+            </button>
         </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/player.js') }}"></script>
     <script>
-        // Inyectamos los datos de Flask y arrancamos el juego
+        // Datos inyectados por Flask
         const dataFromServer = {{ game_data | safe }};
         const giftFromServer = "{{ real_gift }}";
         
+        // Arrancamos el motor
         initPlayer(dataFromServer, giftFromServer);
     </script>
 </body>
