@@ -36,8 +36,8 @@
             Convierte cualquier regalo en un juego interactivo. Más emocionante que el papel, más barato que una tarjeta, disponible en segundos.
         </p>
         <div class="flex flex-col md:flex-row gap-4">
-            <a href="/create" class="btn-primary px-8 py-4 rounded-xl font-bold text-lg">Create your Wrap — From 0,99€</a>
-            <button onclick="iniciarDemo()" class="bg-slate-800 hover:bg-slate-700 px-8 py-4 rounded-xl font-bold text-lg border border-slate-700">Ver Demo</button>
+            <a href="/templates" class="btn-primary px-8 py-4 rounded-xl font-bold text-lg">Create your Wrap — 1,99€</a>
+            <button onclick="window.location.href='/demo/default'" class="bg-slate-800 hover:bg-slate-700 px-8 py-4 rounded-xl font-bold text-lg border border-slate-700">Ver Demo</button>
         </div>
         
         <div class="mt-16 floating opacity-50">
@@ -75,45 +75,32 @@
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-4xl font-bold text-center mb-16">Elige tu formato de Digital Wrap</h2>
             
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="glass-card p-8 rounded-3xl relative overflow-hidden">
-                    <div class="text-purple-500 font-bold mb-4 uppercase tracking-widest text-xs">Para parejas</div>
-                    <h3 class="text-2xl font-bold mb-2">Quiz Wrap</h3>
-                    <p class="text-gray-400 mb-6 text-sm">5 preguntas personalizadas generadas con IA sobre vuestra historia.</p>
-                    <div class="text-4xl font-bold mb-8">0,99€</div>
-                    <ul class="space-y-3 mb-8 text-sm text-gray-300">
-                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Reveal final épico</li>
-                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Narrativa personalizada</li>
-                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Compartible en RRSS</li>
-                    </ul>
-                    <a href="/create" class="block text-center w-full py-3 rounded-xl border border-purple-500 text-purple-400 font-bold hover:bg-purple-500 hover:text-white transition">Comenzar</a>
-                </div>
-
-                <div class="glass-card p-8 rounded-3xl border-purple-500/50 transform scale-105 bg-purple-500/5">
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="glass-card p-8 rounded-3xl border-purple-500/50 bg-purple-500/5 transform scale-105">
                     <div class="absolute top-0 right-0 bg-purple-500 text-white text-[10px] px-3 py-1 font-bold uppercase">Popular</div>
-                    <div class="text-purple-500 font-bold mb-4 uppercase tracking-widest text-xs">Para grupos</div>
-                    <h3 class="text-2xl font-bold mb-2">Clue Wrap</h3>
-                    <p class="text-gray-400 mb-6 text-sm">Gymkhana digital de 3-5 pistas. No verán el regalo hasta resolverlas.</p>
-                    <div class="text-4xl font-bold mb-8">1,49€</div>
-                    <ul class="space-y-3 mb-8 text-sm text-gray-300">
-                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Desbloqueo progresivo</li>
-                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Ideal para viajes/tickets</li>
-                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Soporte multi-jugador</li>
-                    </ul>
-                    <a href="/create" class="block text-center w-full btn-primary py-3 rounded-xl text-white font-bold transition">Comenzar</a>
-                </div>
-
-                <div class="glass-card p-8 rounded-3xl">
-                    <div class="text-purple-500 font-bold mb-4 uppercase tracking-widest text-xs">Para gamers</div>
+                    <div class="text-purple-500 font-bold mb-4 uppercase tracking-widest text-xs">Recomendado</div>
                     <h3 class="text-2xl font-bold mb-2">Mini Escape</h3>
-                    <p class="text-gray-400 mb-6 text-sm">Una mini aventura con candados lógicos y acertijos visuales.</p>
+                    <p class="text-gray-400 mb-6 text-sm">Una mini aventura con acertijos lógicos y narrativa personalizada con IA.</p>
                     <div class="text-4xl font-bold mb-8">1,99€</div>
                     <ul class="space-y-3 mb-8 text-sm text-gray-300">
-                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Historia interactiva</li>
-                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Mayor tiempo de juego</li>
-                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Efectos de sonido</li>
+                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> 5 Niveles de juego</li>
+                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Temas: Navidad, Amor, Cumpleaños</li>
+                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Reveal final del regalo</li>
                     </ul>
-                    <a href="/create" class="block text-center w-full py-3 rounded-xl border border-purple-500 text-purple-400 font-bold hover:bg-purple-500 hover:text-white transition">Comenzar</a>
+                    <a href="/templates" class="block text-center w-full btn-primary py-3 rounded-xl text-white font-bold transition">Comenzar</a>
+                </div>
+
+                <div class="glass-card p-8 rounded-3xl opacity-50 grayscale">
+                    <div class="text-slate-500 font-bold mb-4 uppercase tracking-widest text-xs">Próximamente</div>
+                    <h3 class="text-2xl font-bold mb-2">Premium Escape</h3>
+                    <p class="text-gray-400 mb-6 text-sm">Puzzles avanzados de lógica y mayor profundidad narrativa.</p>
+                    <div class="text-4xl font-bold mb-8">4,99€</div>
+                    <ul class="space-y-3 mb-8 text-sm text-gray-500">
+                        <li><i class="fa-solid fa-plus text-slate-500 mr-2"></i> Sudokus y retos visuales</li>
+                        <li><i class="fa-solid fa-plus text-slate-500 mr-2"></i> Música y efectos de sonido</li>
+                        <li><i class="fa-solid fa-plus text-slate-500 mr-2"></i> Personalización extrema</li>
+                    </ul>
+                    <button id="btn-notify-premium" class="block text-center w-full py-3 rounded-xl border border-slate-700 text-slate-500 font-bold">Avisadme</button>
                 </div>
             </div>
         </div>

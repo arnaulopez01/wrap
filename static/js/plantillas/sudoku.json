@@ -1,7 +1,0 @@
-{
-    "module": "sudoku",
-    "level_title": "Desafío Numérico",
-    "question": "Completa este mini sudoku 4x4. Solo falta la celda clave. (Fila 2, Col 3)",
-    "answer": "4",
-    "board": [[1,2,0,4],[0,0,1,2],[2,1,0,3],[0,3,2,1]]
-}

@@ -1,0 +1,88 @@
+/* --- THEME.CSS --- */
+
+/* 1. TEMA NORMAL (Original Dark/Purple) */
+:root, .theme-default {
+    --primary: #7C3AED;        /* Morado */
+    --primary-hover: #6D28D9;
+    --accent: #06B6D4;         /* Cian */
+    --bg-gradient: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --text-main: #FFFFFF;
+    --text-muted: #94A3B8;
+    --font-family: 'Inter', sans-serif;
+    --title-font: 'Space Grotesk', sans-serif;
+}
+
+/* 2. TEMA NAVIDAD (Verde Bosque y Rojo Pasión) */
+.theme-navidad {
+    --primary: #dc2626;        /* Rojo Navidad */
+    --primary-hover: #b91c1c;
+    --accent: #fbbf24;         /* Dorado */
+    --bg-gradient: radial-gradient(circle at top, #064e3b, #022c22); /* Verde oscuro */
+    --card-bg: rgba(2, 44, 34, 0.8);
+    --card-border: rgba(251, 191, 36, 0.2);
+    --text-main: #f8fafc;
+    --text-muted: #a7f3d0;
+    --font-family: 'Inter', sans-serif;
+    --title-font: 'Georgia', serif; /* Toque más clásico */
+}
+
+/* 3. TEMA SAN VALENTÍN (Rosas y Blancos Suaves) */
+.theme-san-valentin {
+    --primary: #ec4899;        /* Rosa */
+    --primary-hover: #db2777;
+    --accent: #f43f5e;         /* Carmín */
+    --bg-gradient: radial-gradient(circle at center, #fff1f2, #ffe4e6); /* Fondo claro rosado */
+    --card-bg: rgba(255, 255, 255, 0.8);
+    --card-border: rgba(236, 72, 153, 0.3);
+    --text-main: #831843;      /* Texto granate para leer en fondo claro */
+    --text-muted: #be185d;
+    --font-family: 'Inter', sans-serif;
+    --title-font: 'Georgia', serif;
+}
+
+/* 4. TEMA CUMPLEAÑOS (Festivo y Colorido) */
+.theme-cumpleanos {
+    --primary: #f97316;        /* Naranja brillante */
+    --primary-hover: #ea580c;
+    --accent: #0ea5e9;         /* Azul cielo */
+    --bg-gradient: radial-gradient(circle at bottom left, #1e3a8a, #0f172a);
+    --card-bg: rgba(30, 41, 59, 0.6);
+    --card-border: rgba(249, 115, 22, 0.4);
+    --text-main: #ffffff;
+    --text-muted: #fdba74;
+    --font-family: 'Inter', sans-serif;
+    --title-font: 'Space Grotesk', sans-serif;
+}
+
+/* --- APLICACIÓN DE VARIABLES --- */
+/* (Asegúrate de que tus otros archivos CSS usen estas variables) */
+
+body {
+    background: var(--bg-gradient) !important;
+    font-family: var(--font-family);
+    color: var(--text-main);
+    transition: background 0.5s ease; /* Para que el cambio de tema sea suave */
+}
+
+h1, h2, h3, .font-title {
+    font-family: var(--title-font);
+}
+
+.glass-card, .glass-card-preview {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+}
+
+.btn-primary, button.bg-purple-600 {
+    background-color: var(--primary) !important;
+}
+
+.btn-primary:hover, button.bg-purple-600:hover {
+    background-color: var(--primary-hover) !important;
+}
+
+.text-purple-400, .text-purple-500 {
+    color: var(--primary) !important;
+}

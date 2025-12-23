@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elige tu Temática | Digital Wrap</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    
+    <style>
+        .template-card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .template-card:hover {
+            transform: translateY(-8px);
+            border-color: #7C3AED;
+            background: rgba(124, 58, 237, 0.05);
+        }
+        .icon-gradient {
+            background: linear-gradient(135deg, #7C3AED, #06B6D4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-[#0F172A] text-white min-h-screen">
+
+    <nav class="p-6 border-b border-white/5">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="/" class="text-slate-400 hover:text-white transition">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Volver
+            </a>
+            <div class="font-bold tracking-tighter text-xl">
+                DIGITAL<span class="text-purple-500">WRAP</span>
+            </div>
+            <div class="w-10"></div> 
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-6 py-12">
+        <header class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Elige una temática</h1>
+            <p class="text-slate-400 text-lg">Selecciona la base de tu Mini Escape. Podrás personalizarla después con IA.</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <div class="template-card p-8 rounded-[2rem] flex flex-col justify-between group">
+                <div>
+                    <div class="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-heart text-2xl icon-gradient"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">San Valentín</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">Perfecto para aniversarios o sorpresas románticas. Acertijos sobre vuestra historia.</p>
+                </div>
+                <a href="/create/san_valentin" class="w-full py-3 bg-white/5 group-hover:bg-purple-600 text-center rounded-xl font-bold transition-all">Elegir esta</a>
+            </div>
+
+            <div class="template-card p-8 rounded-[2rem] flex flex-col justify-between group">
+                <div>
+                    <div class="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-snowflake text-2xl icon-gradient"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Navidad</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">Regala magia estas fiestas con acertijos de espíritu navideño y nieve digital.</p>
+                </div>
+                <a href="/create/navidad" class="w-full py-3 bg-white/5 group-hover:bg-purple-600 text-center rounded-xl font-bold transition-all">Elegir esta</a>
+            </div>
+
+            <div class="template-card p-8 rounded-[2rem] flex flex-col justify-between group">
+                <div>
+                    <div class="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-cake-candles text-2xl icon-gradient"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Cumpleaños</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">Haz que descubra su regalo de una forma épica. Diversión asegurada para el cumpleañero.</p>
+                </div>
+                <a href="/create/cumpleanos" class="w-full py-3 bg-white/5 group-hover:bg-purple-600 text-center rounded-xl font-bold transition-all">Elegir esta</a>
+            </div>
+
+            <div class="template-card p-8 rounded-[2rem] flex flex-col justify-between group">
+                <div>
+                    <div class="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-compass text-2xl icon-gradient"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Misión Aventura</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">Ideal para regalar viajes o escapadas. Una búsqueda del tesoro digital llena de acción.</p>
+                </div>
+                <a href="/create/aventura" class="w-full py-3 bg-white/5 group-hover:bg-purple-600 text-center rounded-xl font-bold transition-all">Elegir esta</a>
+            </div>
+
+            <div class="template-card p-8 rounded-[2rem] flex flex-col justify-between group">
+                <div>
+                    <div class="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-terminal text-2xl icon-gradient"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Código Hacker</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">Un reto tecnológico con códigos binarios y narrativa de ciberseguridad avanzada.</p>
+                </div>
+                <a href="/create/hacker" class="w-full py-3 bg-white/5 group-hover:bg-purple-600 text-center rounded-xl font-bold transition-all">Elegir esta</a>
+            </div>
+
+            <div class="template-card p-8 rounded-[2rem] flex flex-col justify-between group border-dashed border-2">
+                <div>
+                    <div class="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-wand-magic-sparkles text-2xl text-slate-500"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Personalizado</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">Empieza con un lienzo básico y deja que la IA construya tu idea desde cero.</p>
+                </div>
+                <a href="/create/default" class="w-full py-3 bg-white/5 group-hover:bg-slate-700 text-center rounded-xl font-bold transition-all">Crear desde cero</a>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="py-12 text-center text-slate-500 text-xs">
+        <p>© 2025 Digital Wrap Experiences</p>
+    </footer>
+
+</body>
+</html>

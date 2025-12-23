@@ -1,0 +1,46 @@
+{
+    "theme": "theme-navidad",
+    "title": "Operación: Regalo Perdido",
+    "steps": [
+        {
+            "type": "intro",
+            "title": "Misión Navideña",
+            "subtitle": "Los elfos han escondido tu regalo en el taller secreto de Santa. ¿Podrás recuperarlo antes de que suene la última campana?"
+        },
+        {
+            "type": "level",
+            "level_number": 1,
+            "level_title": "El Guía de la Nariz Roja",
+            "question": "Soy el encargado de iluminar el camino en las noches de niebla. Mi nariz brilla como una brasa. ¿Cuál es mi nombre?",
+            "answer": "Rudolph"
+        },
+        {
+            "type": "level",
+            "level_number": 2,
+            "level_title": "Dulce Tradición",
+            "question": "Blanco, duro o blando, con almendras y miel me encontrarás en la mesa. No soy polvorón, soy el...",
+            "answer": "Turron"
+        },
+        {
+            "type": "level",
+            "level_number": 3,
+            "level_title": "El Árbol de las Estrellas",
+            "question": "En la cima del abeto siempre me verás brillar, guiando a los Reyes Magos desde el cielo hasta el hogar. ¿Qué soy?",
+            "answer": "Estrella"
+        },
+        {
+            "type": "level",
+            "level_number": 4,
+            "level_title": "El Código del Reno",
+            "question": "Si Santa tiene 9 renos y cada uno lleva 4 cascabeles, pero uno perdió 2 en el camino, ¿cuántos cascabeles suenan en total?",
+            "answer": "34"
+        },
+        {
+            "type": "level",
+            "level_number": 5,
+            "level_title": "La Puerta del Taller",
+            "question": "Para abrir la última cerradura, dime: ¿Cómo se llama el hombre de nieve que cobra vida en Navidad?",
+            "answer": "Frosty"
+        }
+    ]
+}

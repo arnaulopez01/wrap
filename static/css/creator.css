@@ -1,29 +1,23 @@
-/* --- CONFIGURACIÓN Y VARIABLES --- */
+/* --- VARIABLES Y RESET DEL EDITOR --- */
 :root {
-    --accent: #7C3AED;
-    --purple-light: #A78BFA; /* Color exacto del player.html */
-    --bg-dark: #0F172A;
-    --bg-card: #1E293B;
-    --gold: #FBBF24;
+    --editor-bg: #0F172A;
+    --editor-card: #1E293B;
+    --editor-accent: #7C3AED;
 }
 
 * {
     box-sizing: border-box;
-    scrollbar-width: thin;
-    scrollbar-color: #334155 transparent;
 }
 
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-
-body {
-    background-color: var(--bg-dark);
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    color: #E2E8F0;
-    overflow: hidden;
+html, body {
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Evita el scroll global de 1cm */
+    background-color: var(--editor-bg);
 }
 
-/* --- CHAT BUBBLES --- */
+/* --- ESTILOS DEL CHAT (TU DISEÑO ORIGINAL) --- */
 .bubble {
     max-width: 85%;
     padding: 1rem 1.25rem;
@@ -34,201 +28,157 @@ body {
 }
 
 .bubble-user {
-    background: linear-gradient(135deg, var(--accent), #5B21B6);
+    background: linear-gradient(135deg, var(--editor-accent), #5B21B6);
     color: white;
     border-bottom-right-radius: 0.25rem;
 }
 
 .bubble-ai {
-    background-color: var(--bg-card);
+    background-color: var(--editor-card);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-bottom-left-radius: 0.25rem;
 }
 
-/* --- EDITOR WYSIWYG (ESTILO PLAYER.HTML) --- */
-.glass-panel {
-    background: rgba(30, 41, 59, 0.4);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+/* --- PREVIEW ADAPTATIVO (WYSIWYG REAL) --- */
+
+/* Fondo del aside: usa el degradado del tema */
+.preview-body-mock {
+    background: var(--bg-gradient, radial-gradient(circle at top right, #1e1b4b, #0f172a));
+    transition: background 0.5s ease;
 }
 
-/* Estilos de texto sincronizados con el Player */
-#game-preview textarea, 
-#game-preview input {
+/* La tarjeta: usa el fondo y borde del tema */
+.glass-card-preview {
+    background: var(--card-bg, rgba(30, 41, 59, 0.7)) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border, rgba(255, 255, 255, 0.1)) !important;
+    color: var(--text-main, #FFFFFF);
+    font-family: var(--font-family, 'Inter', sans-serif);
+}
+
+/* --- TIPOGRAFÍA DINÁMICA DE LA PORTADA --- */
+#title-input {
+    font-family: var(--title-font, 'Space Grotesk', sans-serif);
+    font-size: 2.5rem; /* Tamaño épico */
+    font-weight: 800;
+    line-height: 1.1;
+    text-align: center;
+    color: var(--primary);
     background: transparent;
     border: none;
     width: 100%;
     outline: none;
     resize: none;
-    overflow: hidden;
+    letter-spacing: -0.04em;
 }
 
-#title-input, 
+#subtitle-input {
+    font-family: var(--font-family, 'Inter', sans-serif);
+    font-size: 1.1rem;
+    font-weight: 400;
+    text-align: center;
+    color: var(--text-main);
+    opacity: 0.8;
+    background: transparent;
+    border: none;
+    width: 100%;
+    outline: none;
+    resize: none;
+    font-style: italic;
+}
+
+/* --- TIPOGRAFÍA DINÁMICA DE LOS NIVELES --- */
 #level-title-input {
-    color: var(--purple-light);
+    font-family: var(--title-font);
+    font-size: 1.5rem;
     font-weight: 700;
+    color: var(--primary);
+    background: transparent;
+    border: none;
+    width: 100%;
+    outline: none;
+    resize: none;
 }
 
 #question-area {
-    color: #FFFFFF;
+    font-family: var(--font-family);
+    font-size: 1.125rem;
     font-weight: 500;
+    line-height: 1.6;
+    color: var(--text-main);
+    background: transparent;
+    border: none;
+    width: 100%;
+    outline: none;
+    resize: none;
 }
 
-/* --- ZONAS EDITABLES (INDICADORES DE USABILIDAD) --- */
+/* --- ZONAS EDITABLES --- */
 .editable-zone {
-    position: relative; /* Clave para posicionar el lápiz */
-    padding: 12px;
+    position: relative;
+    padding: 8px;
     border: 1px solid transparent;
-    border-radius: 16px;
-    transition: background 0.2s, border-color 0.2s;
-    cursor: text;
-}
-
-/* El icono del lápiz: visible pero sutil por defecto */
-.editable-zone .fa-pencil {
-    opacity: 0.4; 
+    border-radius: 12px;
     transition: all 0.2s ease;
 }
 
 .editable-zone:hover {
-    background: rgba(167, 139, 250, 0.04);
-    border-color: rgba(167, 139, 250, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
-.editable-zone:hover .fa-pencil {
-    opacity: 1;
-    color: var(--purple-light);
-    transform: scale(1.1);
-}
-
-/* Indicador de texto "Editar..." */
 .edit-hint {
     position: absolute;
-    bottom: -16px;
-    right: 12px;
-    font-size: 8px;
+    bottom: -12px;
+    right: 8px;
+    font-size: 7px;
     text-transform: uppercase;
-    font-weight: 800;
+    font-weight: 900;
     letter-spacing: 0.1em;
-    color: var(--purple-light);
+    color: var(--primary);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.2s;
 }
 
 .editable-zone:hover .edit-hint {
     opacity: 0.6;
 }
 
-/* --- ELIMINAR ANIMACIONES DE TEXTO AL PASAR DIAPOSITIVAS --- */
-#game-preview, 
-#game-preview * {
-    animation: none !important; /* Bloquea cualquier fade-in o slide-in */
-    transition: font-size 0.05s linear; /* Solo permitimos el micro-ajuste del auto-shrink */
+/* --- ELEMENTOS DEL PLAYER --- */
+.input-mirror-container {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 1rem;
+    text-align: center;
 }
 
-/* --- MODAL SELECTOR DE MÓDULOS --- */
-#module-overlay {
-    background: rgba(2, 6, 23, 0.95);
-    backdrop-filter: blur(10px);
-    z-index: 100;
+.answer-input-v {
+    color: #4ade80 !important; /* Verde respuesta */
+    font-weight: 700;
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    text-align: center;
 }
 
-.fa-lock.text-amber-400 {
-    color: var(--gold);
-    filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.5));
-}
+/* --- UTILIDADES --- */
+.custom-scroll::-webkit-scrollbar { width: 4px; }
+.custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
 
-@keyframes pulse-gold {
-    0% { transform: scale(1); opacity: 0.8; }
-    50% { transform: scale(1.1); opacity: 1; }
-    100% { transform: scale(1); opacity: 0.8; }
-}
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-.animate-pulse {
-    animation: pulse-gold 2s infinite ease-in-out;
-}
-
-/* --- FOOTER SIMÉTRICO (h-24) --- */
-.h-24 {
-    height: 6rem; /* 96px fijos */
-}
-
-.border-t {
-    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
-}
-
-/* --- RESPONSIVE ORIGINAL --- */
-@media (max-width: 768px) {
-    #chat-section {
-        width: 100% !important;
-    }
-
-    #preview-section {
-        width: 100% !important;
-        position: fixed;
-        top: 64px;
-        left: 0;
-        height: calc(100vh - 64px);
-        z-index: 40;
-        background-color: #020617;
-        padding: 1rem !important;
-    }
-
-    #preview-section.hidden {
-        display: none !important;
-    }
-
-    #preview-section.flex {
-        display: flex !important;
-    }
-
-    #mobile-toggle-btn {
-        z-index: 100;
-    }
-}
-
-/* Solo animamos los mensajes del chat cuando aparecen */
-#chat-window > div {
-    animation: fadeInUp 0.3s ease-out forwards;
-}
-
+.animate-msg { animation: fadeInUp 0.3s ease-out forwards; }
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- BLOQUEO DE ANIMACIONES EN PREVIEW --- */
-#game-preview, 
-#game-preview * {
+/* Bloqueo de saltos visuales en el preview */
+#game-preview, #game-preview * {
     animation: none !important;
-    transition: none !important; /* Evita que los textos "vuelen" al cambiar */
-}
-
-/* --- CONTENEDOR DE RESPUESTA (Estilo Player Exacto) --- */
-.input-mirror-container {
-    background: rgba(30, 41, 59, 0.5); /* bg-slate-800/50 */
-    border: 1px solid rgba(255, 255, 255, 0.2); /* Borde blanco sutil */
-    border-radius: 1rem; /* rounded-2xl */
-    padding: 1rem 1.5rem; /* py-4 px-6 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: border-color 0.2s ease !important; /* Solo permitimos esta transición */
-}
-
-.input-mirror-container:hover {
-    border-color: #7C3AED; /* El "morado" al pasar el ratón */
-}
-
-/* Respuesta en verde brillante */
-.answer-input-v {
-    color: #4ade80 !important; /* text-green-400 */
-    font-weight: 700;
-    text-align: center;
-    background: transparent;
-    border: none;
-    outline: none;
-    width: 100%;
+    transition: none !important;
 }

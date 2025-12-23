@@ -1,7 +1,0 @@
-{
-    "module": "escape",
-    "level_title": "La Habitación Cerrada",
-    "question": "Encuentras una nota: 'La suma de las esquinas es el código'. Observas un cuadrado con 1, 2, 3, 4 en las puntas.",
-    "answer": "10",
-    "hint": "Suma 1+2+3+4"
-}

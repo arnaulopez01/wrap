@@ -10,57 +10,34 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/creator.css') }}">
-
-    <style>
-        /* Fondo degradado del reproductor real */
-        .preview-body-mock {
-            background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
-        }
-        
-        /* Efecto Cristal (Glassmorphism) idéntico al player.html */
-        .glass-card-preview {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* Animación suave para mensajes del chat */
-        .animate-msg { animation: fadeInUp 0.3s ease-out forwards; }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Ocultar scrollbar pero permitir funcionalidad */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden bg-[#0F172A] text-slate-200">
 
-    <header class="h-16 border-b border-white/5 flex items-center justify-between px-8 bg-[#0F172A]/80 backdrop-blur-md z-50">
+    <header class="h-16 border-b border-white/5 flex items-center justify-between px-8 bg-[#0F172A]/80 backdrop-blur-md z-50 flex-none">
         <div class="flex items-center gap-4">
             <a href="/" class="text-slate-400 hover:text-white transition">
                 <i class="fa-solid fa-arrow-left text-lg"></i>
             </a>
             <span class="font-bold tracking-tighter text-xl text-white">
-                DIGITAL<span class="text-purple-500">WRAP</span>
+                DIGITAL<span style="color: var(--primary)">WRAP</span>
             </span>
         </div>
         
         <div class="flex items-center gap-4">
-            <select id="product-selector" class="bg-slate-800 border border-purple-500/30 text-xs rounded-lg px-3 py-2 text-purple-300 outline-none focus:border-purple-500 cursor-pointer">
-                <option value="quiz">QUIZ WRAP - 0,99€</option>
-                <option value="gymkhana">GYMKHANA - 1,49€</option>
-                <option value="escape">PREMIUM ESCAPE - 1,99€</option>
+            <select id="theme-selector" class="bg-slate-800 border border-purple-500/30 text-xs rounded-lg px-3 py-2 text-purple-300 outline-none focus:border-purple-500 cursor-pointer uppercase tracking-widest font-bold">
+                <option value="theme-default">✨ Tema: Clásico</option>
+                <option value="theme-navidad">🎄 Tema: Navidad</option>
+                <option value="theme-san-valentin">❤️ Tema: San Valentín</option>
+                <option value="theme-cumpleanos">🎂 Tema: Cumpleaños</option>
             </select>
         </div>
     </header>
 
     <div class="flex flex-1 overflow-hidden relative">
         
-       <main id="chat-section" class="w-full md:w-1/2 flex flex-col relative bg-[#0F172A] border-r border-white/5 transition-all">
+        <main id="chat-section" class="w-full md:w-1/2 flex flex-col relative bg-[#0F172A] border-r border-white/5 transition-all">
             <div id="chat-window" class="flex-1 overflow-y-auto p-6 md:p-10 space-y-6 custom-scroll">
                 <div class="flex justify-start animate-msg">
                     <div class="bubble bubble-ai">
@@ -70,7 +47,7 @@
                 </div>
             </div>
 
-            <div class="h-24 px-6 bg-[#0F172A] border-t border-white/5 flex items-center">
+            <div class="h-24 px-6 bg-[#0F172A] border-t border-white/5 flex items-center flex-none">
                 <div class="relative w-full max-w-2xl mx-auto">
                     <input type="text" id="user-input" 
                            class="w-full bg-slate-800 border border-white/10 rounded-2xl py-4 pl-6 pr-14 outline-none focus:border-purple-500 transition-all text-sm text-white" 
@@ -83,13 +60,12 @@
         </main>
 
         <aside id="preview-section" class="hidden md:flex w-full md:w-[50%] preview-body-mock flex-col relative transition-all">
-            
             <div class="flex-1 py-6 px-8 flex flex-col items-center justify-center overflow-hidden">
                 <div id="game-preview" class="w-full max-w-sm glass-card-preview p-8 rounded-[3rem] shadow-2xl relative min-h-[480px] max-h-[92%] flex flex-col justify-between transition-all">
                     </div>
             </div>
 
-            <div class="h-24 px-8 bg-[#0F172A] border-t border-white/5 flex items-center">
+            <div class="h-24 px-8 bg-[#0F172A] border-t border-white/5 flex items-center flex-none">
                 <div class="flex items-center justify-between w-full max-w-4xl mx-auto">
                     <button onclick="manualSave()" id="save-btn" class="flex items-center gap-2 bg-slate-800 hover:bg-green-600 px-5 py-2.5 rounded-xl text-[10px] font-bold uppercase transition-all text-white border border-white/5 shadow-sm">
                         <i class="fa-solid fa-floppy-disk"></i> Guardar
@@ -120,13 +96,24 @@
     </div>
 
     <script>
-        // Datos iniciales desde Flask
         window.serverData = {{ initial_data | tojson | safe }};
         window.currentGameId = "{{ game_id }}";
+
+        function toggleMobileView() {
+            const preview = document.getElementById('preview-section');
+            const chat = document.getElementById('chat-section');
+            if (preview.classList.contains('hidden')) {
+                preview.classList.remove('hidden');
+                preview.classList.add('flex');
+                chat.classList.add('hidden');
+            } else {
+                preview.classList.add('hidden');
+                preview.classList.remove('flex');
+                chat.classList.remove('hidden');
+            }
+        }
     </script>
     
-    <script src="{{ url_for('static', filename='js/modules.js') }}"></script>
     <script src="{{ url_for('static', filename='js/creator.js') }}"></script>
-
 </body>
 </html>

@@ -1,0 +1,46 @@
+{
+    "theme": "theme-san-valentin",
+    "title": "El Código de mi Corazón",
+    "steps": [
+        {
+            "type": "intro",
+            "title": "Una Aventura Romántica",
+            "subtitle": "He guardado algo muy especial para ti, pero antes de descubrirlo, debemos dar un paseo por los símbolos de nuestra historia."
+        },
+        {
+            "type": "level",
+            "level_number": 1,
+            "level_title": "El Mensajero del Amor",
+            "question": "Vuelo con alas blancas, uso arco y flecha, y aunque parezca un niño, dejo a la gente satisfecha. ¿Quién soy?",
+            "answer": "Cupido"
+        },
+        {
+            "type": "level",
+            "level_number": 2,
+            "level_title": "Símbolo de Pasión",
+            "question": "Tengo espinas pero no soy cactus, tengo pétalos de seda y en color rojo soy la reina de los enamorados. ¿Qué flor soy?",
+            "answer": "Rosa"
+        },
+        {
+            "type": "level",
+            "level_number": 3,
+            "level_title": "Dulce Tentación",
+            "question": "Vengo en caja o en tableta, soy oscuro o con leche, y dicen que libero endorfinas con solo un mordisco. ¿Qué soy?",
+            "answer": "Chocolate"
+        },
+        {
+            "type": "level",
+            "level_number": 4,
+            "level_title": "El Motor de Todo",
+            "question": "No tiene voz pero habla, no tiene manos pero abraza, y es el único órgano que 'late' por otra persona. ¿Qué es?",
+            "answer": "Corazon"
+        },
+        {
+            "type": "level",
+            "level_number": 5,
+            "level_title": "Nuestra Palabra Mágica",
+            "question": "Son cuatro letras que lo cambian todo, no se compra ni se vende, se siente y se demuestra. ¿Cuál es el sentimiento que nos une?",
+            "answer": "Amor"
+        }
+    ]
+}

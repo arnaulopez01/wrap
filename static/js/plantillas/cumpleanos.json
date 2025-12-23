@@ -1,0 +1,46 @@
+{
+    "theme": "theme-cumpleanos",
+    "title": "¡Feliz Cumpleaños: El Gran Reto!",
+    "steps": [
+        {
+            "type": "intro",
+            "title": "¡Un año más sabio!",
+            "subtitle": "Para descubrir tu regalo, primero debes demostrar que eres el rey o la reina de la fiesta. ¡Supera estos 5 retos cumpleañeros!"
+        },
+        {
+            "type": "level",
+            "level_number": 1,
+            "level_title": "Deseo Iluminado",
+            "question": "Encima de la tarta nos verás brillar, pide un gran deseo y luego haznos soplar. ¿Qué somos?",
+            "answer": "Velas"
+        },
+        {
+            "type": "level",
+            "level_number": 2,
+            "level_title": "La Envoltura Misteriosa",
+            "question": "Llevo lazo y papel de colores, por dentro guardo sueños y mil amores. Todo el mundo me quiere abrir. ¿Qué soy?",
+            "answer": "Regalo"
+        },
+        {
+            "type": "level",
+            "level_number": 3,
+            "level_title": "El Corazón de la Fiesta",
+            "question": "Con bizcocho, nata o chocolate me verás, y el 'Cumpleaños Feliz' conmigo cantarás. ¿Qué postre soy?",
+            "answer": "Tarta"
+        },
+        {
+            "type": "level",
+            "level_number": 4,
+            "level_title": "Matemática Temporal",
+            "question": "Si el año pasado soplaste 24 velas y este año soplas 25... ¿Cuántas soplarás dentro de exactamente un año?",
+            "answer": "26"
+        },
+        {
+            "type": "level",
+            "level_number": 5,
+            "level_title": "El Final del Camino",
+            "question": "Hay música, amigos, globos y confeti. No es una reunión cualquiera, es tu gran...",
+            "answer": "Fiesta"
+        }
+    ]
+}

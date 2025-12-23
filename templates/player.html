@@ -3,57 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Playing Wrap | Digital Wrap</title>
+    <title>Digital Wrap | Experience</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    
     <style>
-        .animate-fade-in { animation: fadeIn 0.4s ease-out; }
+        /* Animaciones */
+        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .animate-shake { animation: shake 0.4s ease-in-out; }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
         }
 
+        /* Marca de agua para la Demo */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 8rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.03);
+            pointer-events: none;
+            z-index: 0;
+            white-space: nowrap;
+            text-transform: uppercase;
+        }
+
+        /* Forzar que el fondo ocupe todo el alto */
         body {
-            background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
-        }
-
-        .glass-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow-x: hidden;
         }
     </style>
 </head>
-<body class="text-white flex items-center justify-center min-h-screen p-6 overflow-hidden">
+<body class="theme-default">
 
-    <div id="game-container" class="max-w-md w-full glass-card p-8 rounded-[3rem] shadow-2xl relative">
+    {% if is_demo %}
+    <div class="watermark">VISTA PREVIA</div>
+    <div class="fixed top-0 left-0 w-full bg-amber-500 text-black text-[10px] font-bold uppercase py-1 text-center z-50 tracking-widest shadow-lg">
+        Modo Demo: El regalo final está bloqueado
+    </div>
+    {% endif %}
+
+    <div id="game-container" class="max-w-md w-full glass-card p-8 rounded-[3rem] shadow-2xl relative z-10 mx-4">
         
-        <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
+        <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-2xl flex items-center justify-center shadow-xl border border-white/10" style="background-color: var(--primary)">
             <i class="fa-solid fa-star text-white"></i>
         </div>
 
         <div id="quiz-area">
+            <div class="flex items-center justify-center min-h-[300px]">
+                <i class="fa-solid fa-circle-notch animate-spin text-3xl opacity-20"></i>
             </div>
+        </div>
 
         <div id="reward-area" class="hidden text-center space-y-8 animate-fade-in py-6">
             <div class="space-y-2">
                 <i class="fa-solid fa-circle-check text-green-500 text-5xl mb-4"></i>
-                <h2 class="text-3xl font-black text-white uppercase tracking-tighter">¡LOGRADO!</h2>
-                <p class="text-slate-400 font-medium">Has superado todos los niveles.</p>
+                <h2 class="text-3xl font-black uppercase tracking-tighter">¡LOGRADO!</h2>
+                <p class="opacity-60 font-medium">Has superado todos los niveles.</p>
             </div>
 
-            <div class="relative p-8 bg-white/5 rounded-3xl border-2 border-dashed border-yellow-500/50">
-                <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1E293B] px-4 text-[10px] font-bold text-yellow-500 uppercase tracking-widest">Tu Regalo</span>
-                <span id="final-gift" class="text-2xl font-bold text-white block"></span>
+            <div class="relative p-8 bg-white/5 rounded-3xl border-2 border-dashed" style="border-color: var(--accent)">
+                <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0F172A] px-4 text-[10px] font-bold uppercase tracking-widest" style="color: var(--accent)">Tu Regalo</span>
+                <span id="final-gift" class="text-2xl font-bold block"></span>
             </div>
 
-            <button onclick="location.reload()" class="text-slate-500 text-xs font-bold uppercase tracking-widest hover:text-white transition-colors">
+            <button onclick="location.reload()" class="opacity-40 text-xs font-bold uppercase tracking-widest hover:opacity-100 transition-opacity">
                 Ver de nuevo
             </button>
         </div>
@@ -62,11 +91,17 @@
     <script src="{{ url_for('static', filename='js/player.js') }}"></script>
     <script>
         // Datos inyectados por Flask
-        const dataFromServer = {{ game_data | safe }};
-        const giftFromServer = "{{ real_gift }}";
-        
-        // Arrancamos el motor
-        initPlayer(dataFromServer, giftFromServer);
+        try {
+            const dataFromServer = {{ game_data | safe }};
+            const giftFromServer = "{{ real_gift }}";
+            const isDemo = {{ 'true' if is_demo else 'false' }};
+            
+            // Inicializamos el motor del jugador
+            initPlayer(dataFromServer, giftFromServer, isDemo);
+        } catch (e) {
+            console.error("Error cargando los datos del juego:", e);
+            document.getElementById('quiz-area').innerHTML = "<p class='text-center text-red-400'>Error al cargar la experiencia.</p>";
+        }
     </script>
 </body>
 </html>

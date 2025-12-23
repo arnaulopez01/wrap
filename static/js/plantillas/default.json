@@ -1,0 +1,46 @@
+{
+    "theme": "theme-default",
+    "title": "Misión: El Regalo Oculto",
+    "steps": [
+        {
+            "type": "intro",
+            "title": "Tu aventura comienza",
+            "subtitle": "Alguien ha preparado un regalo para ti, pero para conseguirlo deberás demostrar tu ingenio en 5 niveles de lógica. ¿Aceptas el reto?"
+        },
+        {
+            "type": "level",
+            "level_number": 1,
+            "level_title": "El Primer Paso",
+            "question": "Piedra, papel o...",
+            "answer": "Tijera"
+        },
+        {
+            "type": "level",
+            "level_number": 2,
+            "level_title": "Lógica Matemática",
+            "question": "Si continúas la serie: 2, 4, 8, 16... ¿Cuál es el siguiente número?",
+            "answer": "32"
+        },
+        {
+            "type": "level",
+            "level_number": 3,
+            "level_title": "Mezcla de Colores",
+            "question": "Si mezclas el color azul con el amarillo en tu paleta, ¿qué color obtendrás?",
+            "answer": "Verde"
+        },
+        {
+            "type": "level",
+            "level_number": 4,
+            "level_title": "Orientación",
+            "question": "Si el sol sale por el Este y se pone por el Oeste... ¿cuál es el punto cardinal opuesto al Norte?",
+            "answer": "Sur"
+        },
+        {
+            "type": "level",
+            "level_number": 5,
+            "level_title": "La Llave Final",
+            "question": "Para desbloquear tu regalo, escribe la palabra mágica que abre todas las puertas en los cuentos:",
+            "answer": "Abrakadabra"
+        }
+    ]
+}
