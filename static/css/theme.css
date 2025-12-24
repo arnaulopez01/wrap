@@ -1,88 +1,153 @@
-/* --- THEME.CSS --- */
+/* --- DIGITAL WRAP: THEME ENGINE --- */
 
-/* 1. TEMA NORMAL (Original Dark/Purple) */
+/* 1. CONFIGURACIÓN DE TEMAS (VARIABLES) */
+
 :root, .theme-default {
-    --primary: #7C3AED;        /* Morado */
-    --primary-hover: #6D28D9;
-    --accent: #06B6D4;         /* Cian */
+    --primary: #9333EA;         /* Tu nuevo Púrpura eléctrico */
+    --primary-hover: #7E22CE;
+    --accent: #06B6D4;
     --bg-gradient: radial-gradient(circle at top right, #1e1b4b, #0f172a);
     --card-bg: rgba(30, 41, 59, 0.7);
     --card-border: rgba(255, 255, 255, 0.1);
+    --input-bg: rgba(255, 255, 255, 0.05);
     --text-main: #FFFFFF;
     --text-muted: #94A3B8;
     --font-family: 'Inter', sans-serif;
     --title-font: 'Space Grotesk', sans-serif;
 }
 
-/* 2. TEMA NAVIDAD (Verde Bosque y Rojo Pasión) */
 .theme-navidad {
-    --primary: #dc2626;        /* Rojo Navidad */
-    --primary-hover: #b91c1c;
-    --accent: #fbbf24;         /* Dorado */
-    --bg-gradient: radial-gradient(circle at top, #064e3b, #022c22); /* Verde oscuro */
-    --card-bg: rgba(2, 44, 34, 0.8);
-    --card-border: rgba(251, 191, 36, 0.2);
-    --text-main: #f8fafc;
-    --text-muted: #a7f3d0;
-    --font-family: 'Inter', sans-serif;
-    --title-font: 'Georgia', serif; /* Toque más clásico */
-}
-
-/* 3. TEMA SAN VALENTÍN (Rosas y Blancos Suaves) */
-.theme-san-valentin {
-    --primary: #ec4899;        /* Rosa */
-    --primary-hover: #db2777;
-    --accent: #f43f5e;         /* Carmín */
-    --bg-gradient: radial-gradient(circle at center, #fff1f2, #ffe4e6); /* Fondo claro rosado */
-    --card-bg: rgba(255, 255, 255, 0.8);
-    --card-border: rgba(236, 72, 153, 0.3);
-    --text-main: #831843;      /* Texto granate para leer en fondo claro */
-    --text-muted: #be185d;
+    --primary: #EF4444;         /* Rojo Navidad Vibrante */
+    --primary-hover: #DC2626;
+    --accent: #059669;
+    --bg-gradient: radial-gradient(circle, #f8fafc, #e2e8f0); /* Blanco Gélido */
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --card-border: rgba(239, 68, 68, 0.2);
+    --input-bg: rgba(0, 0, 0, 0.03);
+    --text-main: #0F172A;      /* Texto oscuro para leer sobre blanco */
+    --text-muted: #475569;
     --font-family: 'Inter', sans-serif;
     --title-font: 'Georgia', serif;
 }
 
-/* 4. TEMA CUMPLEAÑOS (Festivo y Colorido) */
+.theme-san-valentin {
+    --primary: #F43F5E;         /* Rosa Intenso */
+    --primary-hover: #E11D48;
+    --accent: #FB7185;
+    --bg-gradient: radial-gradient(circle, #fff1f2, #ffe4e6); /* Rosa Crema */
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --card-border: rgba(244, 63, 94, 0.2);
+    --input-bg: rgba(244, 63, 94, 0.03);
+    --text-main: #881337;      /* Texto granate */
+    --text-muted: #9F1239;
+    --font-family: 'Inter', sans-serif;
+    --title-font: 'Georgia', serif;
+}
+
 .theme-cumpleanos {
-    --primary: #f97316;        /* Naranja brillante */
-    --primary-hover: #ea580c;
-    --accent: #0ea5e9;         /* Azul cielo */
-    --bg-gradient: radial-gradient(circle at bottom left, #1e3a8a, #0f172a);
-    --card-bg: rgba(30, 41, 59, 0.6);
-    --card-border: rgba(249, 115, 22, 0.4);
-    --text-main: #ffffff;
-    --text-muted: #fdba74;
+    --primary: #3B82F6;         /* Azul Eléctrico */
+    --primary-hover: #2563EB;
+    --accent: #F59E0B;
+    --bg-gradient: radial-gradient(circle at bottom left, #EFF6FF, #DBEAFE); /* Azul pastel */
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --card-border: rgba(59, 130, 246, 0.2);
+    --input-bg: rgba(59, 130, 246, 0.03);
+    --text-main: #1E3A8A;
+    --text-muted: #1D4ED8;
     --font-family: 'Inter', sans-serif;
     --title-font: 'Space Grotesk', sans-serif;
 }
 
-/* --- APLICACIÓN DE VARIABLES --- */
-/* (Asegúrate de que tus otros archivos CSS usen estas variables) */
+.theme-hacker {
+    --primary: #22C55E;         /* Verde Matrix */
+    --primary-hover: #16A34A;
+    --accent: #14532D;
+    --bg-gradient: linear-gradient(180deg, #000000 0%, #051405 100%); /* Negro Total */
+    --card-bg: rgba(0, 10, 0, 0.9);
+    --card-border: #22C55E;
+    --input-bg: rgba(34, 197, 94, 0.05);
+    --text-main: #22C55E;
+    --text-muted: #166534;
+    --font-family: 'Courier New', monospace;
+    --title-font: 'Courier New', monospace;
+}
+
+/* 2. APLICACIÓN GLOBAL */
 
 body {
     background: var(--bg-gradient) !important;
+    color: var(--text-main) !important;
     font-family: var(--font-family);
-    color: var(--text-main);
-    transition: background 0.5s ease; /* Para que el cambio de tema sea suave */
+    transition: all 0.5s ease;
 }
 
 h1, h2, h3, .font-title {
-    font-family: var(--title-font);
+    font-family: var(--title-font) !important;
+    color: var(--primary);
 }
+
+/* 3. COMPONENTES: LA TARJETA (GLASS) */
 
 .glass-card, .glass-card-preview {
     background: var(--card-bg) !important;
     border: 1px solid var(--card-border) !important;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    color: var(--text-main) !important;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
 }
 
-.btn-primary, button.bg-purple-600 {
+/* 4. COMPONENTES: BOTONES (FIJOS PARA CONTRASTE) */
+
+.btn-primary, 
+.btn-finalize, 
+button.bg-purple-600, 
+#save-btn.bg-green-600 {
     background-color: var(--primary) !important;
+    color: #FFFFFF !important;         /* FORZADO BLANCO PARA CUALQUIER TEMA */
+    font-weight: 800 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+    border: none;
 }
 
-.btn-primary:hover, button.bg-purple-600:hover {
-    background-color: var(--primary-hover) !important;
+.btn-primary:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
+
+/* 5. COMPONENTES: INPUTS (CRISTAL, SIN GRIS) */
+
+#player-answer, 
+#final-gift-input {
+    background-color: var(--input-bg) !important;
+    border: 1px solid var(--card-border) !important;
+    color: var(--text-main) !important;
+    outline: none;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+}
+
+#player-answer:focus {
+    border-color: var(--primary) !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 6. OTROS DETALLES */
 
 .text-purple-400, .text-purple-500 {
     color: var(--primary) !important;
+}
+
+.border-purple-500\/30 {
+    border-color: var(--card-border) !important;
+}
+
+/* Marca de agua dinámica */
+.watermark {
+    color: var(--primary);
+    opacity: 0.07;
+    filter: grayscale(0.5);
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Wrap | Experience</title>
+    <title>Digital Wrap | Tu Experiencia</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -12,33 +12,21 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
     
     <style>
-        /* Animaciones */
-        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Animaciones de entrada */
+        .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
         
         .animate-shake { animation: shake 0.4s ease-in-out; }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-6px); }
-            75% { transform: translateX(6px); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
         }
 
-        /* Marca de agua para la Demo */
-        .watermark {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 8rem;
-            font-weight: 900;
-            color: rgba(255, 255, 255, 0.03);
-            pointer-events: none;
-            z-index: 0;
-            white-space: nowrap;
-            text-transform: uppercase;
-        }
-
-        /* Forzar que el fondo ocupe todo el alto */
+        /* Configuración del Layout para que el fondo del tema ocupe todo */
         body {
             min-height: 100vh;
             display: flex;
@@ -46,6 +34,22 @@
             justify-content: center;
             margin: 0;
             overflow-x: hidden;
+            /* El background-gradient viene de theme.css */
+        }
+
+        /* Marca de agua sutil para Demo */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 8rem;
+            font-weight: 900;
+            color: rgba(0, 0, 0, 0.03);
+            pointer-events: none;
+            z-index: 0;
+            white-space: nowrap;
+            text-transform: uppercase;
         }
     </style>
 </head>
@@ -58,9 +62,10 @@
     </div>
     {% endif %}
 
-    <div id="game-container" class="max-w-md w-full glass-card p-8 rounded-[3rem] shadow-2xl relative z-10 mx-4">
+    <div id="game-container" class="max-w-md w-full glass-card p-8 rounded-[3rem] shadow-2xl relative z-10 mx-4 transition-all duration-500">
         
-        <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-2xl flex items-center justify-center shadow-xl border border-white/10" style="background-color: var(--primary)">
+        <div id="theme-icon" class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-2xl flex items-center justify-center shadow-xl border border-white/10" 
+             style="background-color: var(--primary)">
             <i class="fa-solid fa-star text-white"></i>
         </div>
 
@@ -78,7 +83,7 @@
             </div>
 
             <div class="relative p-8 bg-white/5 rounded-3xl border-2 border-dashed" style="border-color: var(--accent)">
-                <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0F172A] px-4 text-[10px] font-bold uppercase tracking-widest" style="color: var(--accent)">Tu Regalo</span>
+                <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-inherit px-4 text-[10px] font-bold uppercase tracking-widest" style="color: var(--accent)">Tu Regalo</span>
                 <span id="final-gift" class="text-2xl font-bold block"></span>
             </div>
 
@@ -90,17 +95,14 @@
 
     <script src="{{ url_for('static', filename='js/player.js') }}"></script>
     <script>
-        // Datos inyectados por Flask
         try {
             const dataFromServer = {{ game_data | safe }};
             const giftFromServer = "{{ real_gift }}";
             const isDemo = {{ 'true' if is_demo else 'false' }};
             
-            // Inicializamos el motor del jugador
             initPlayer(dataFromServer, giftFromServer, isDemo);
         } catch (e) {
-            console.error("Error cargando los datos del juego:", e);
-            document.getElementById('quiz-area').innerHTML = "<p class='text-center text-red-400'>Error al cargar la experiencia.</p>";
+            console.error("Error:", e);
         }
     </script>
 </body>

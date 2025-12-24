@@ -1,0 +1,40 @@
+{
+  "theme": "theme-hacker",
+  "steps": [
+    {
+      "type": "intro",
+      "title": "SISTEMA COMPROMETIDO",
+      "subtitle": "Un intruso ha bloqueado tu regalo. Tienes 5 niveles para hackear el cortafuegos y recuperar el acceso."
+    },
+    {
+      "type": "quiz",
+      "level_title": "Protocolo Binario",
+      "question": "Para saltar el primer firewall, descifra este mensaje en binario: 01001000 01001001",
+      "answer": "HI"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Inyección de Código",
+      "question": "El sistema pide una palabra clave de administrador. Pista: Es el nombre del usuario con todos los privilegios en Linux.",
+      "answer": "root"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Puertos de Red",
+      "question": "¿Cuál es el número del puerto estándar para el protocolo seguro de transferencia de hipertexto (HTTPS)?",
+      "answer": "443"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Ingeniería Social",
+      "question": "Recibes un mail de 'seguridad@paypa1.com' (con el número 1). ¿Es un ataque de Phishing? (Si/No)",
+      "answer": "Si"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Fuerza Bruta",
+      "question": "Último cortafuegos. El código de acceso es el año en que se envió el primer correo electrónico de la historia.",
+      "answer": "1971"
+    }
+  ]
+}

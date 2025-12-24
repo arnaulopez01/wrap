@@ -31,6 +31,7 @@
                 <option value="theme-navidad">🎄 Tema: Navidad</option>
                 <option value="theme-san-valentin">❤️ Tema: San Valentín</option>
                 <option value="theme-cumpleanos">🎂 Tema: Cumpleaños</option>
+                <option value="theme-hacker">💻 Tema: Hacker</option>
             </select>
         </div>
     </header>
@@ -41,8 +42,8 @@
             <div id="chat-window" class="flex-1 overflow-y-auto p-6 md:p-10 space-y-6 custom-scroll">
                 <div class="flex justify-start animate-msg">
                     <div class="bubble bubble-ai">
-                        <p>Soy tu editor de experiencias, ¡Píde lo que quieras!</p>
-                        <p class="text-xs mt-2 opacity-70">Por ejemplo: Un escape room con temática pirata</p>
+                        <p>Soy tu editor de experiencias, ¡Pídeme lo que quieras!</p>
+                        <p class="text-xs mt-2 opacity-70">Por ejemplo: "Haz los acertijos más difíciles" o "Cambia el tono a uno más divertido".</p>
                     </div>
                 </div>
             </div>
@@ -60,8 +61,9 @@
         </main>
 
         <aside id="preview-section" class="hidden md:flex w-full md:w-[50%] preview-body-mock flex-col relative transition-all">
+            
             <div class="flex-1 py-6 px-8 flex flex-col items-center justify-center overflow-hidden">
-                <div id="game-preview" class="w-full max-w-sm glass-card-preview p-8 rounded-[3rem] shadow-2xl relative min-h-[480px] max-h-[92%] flex flex-col justify-between transition-all">
+                <div id="game-preview" class="w-full max-w-sm glass-card-preview p-8 rounded-[3rem] shadow-2xl relative overflow-hidden min-h-[480px] max-h-[92%] flex flex-col justify-between transition-all">
                     </div>
             </div>
 
