@@ -1,7 +1,6 @@
 /**
- * DIGITAL WRAP - CREATOR ENGINE (RESTAURADO & MEJORADO)
- * Portada épica sincronizada con la demo + Entorno de edición original.
- * v. Selector de Temas + Modal de Regalo Final.
+ * DIGITAL WRAP - CREATOR ENGINE
+ * Sincronización 1:1, Tematización Dinámica y Edición Proporcional
  */
 
 let currentGamedata = window.serverData || null;
@@ -17,83 +16,117 @@ const previewSection = document.getElementById('preview-section');
 const themeSelector = document.getElementById('theme-selector');
 
 /**
- * 1. RENDERIZADO DEL PREVIEW (MODO ESPEJO)
+ * Función de auto-ajuste: elimina líneas en blanco extra y 
+ * ajusta la altura del textarea al contenido real.
+ */
+function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+}
+
+/**
+ * 1. MOTOR DE RENDERIZADO (FIDELIDAD TOTAL)
  */
 function updatePreview() {
     if (!currentGamedata || !currentGamedata.steps) return;
     
-    // Aplicar el tema solo al fondo de la derecha (Aside)
+    // Sincronizamos el tema visual. Al aplicar themeClass al aside, 
+    // el footer transparente hereda el fondo automáticamente.
     const themeClass = currentGamedata.theme || 'theme-default';
-    previewSection.className = `hidden md:flex w-full md:w-[50%] preview-body-mock flex-col relative transition-all ${themeClass}`;
+    previewSection.className = `hidden md:flex w-full md:w-1/2 preview-body-mock flex-col relative overflow-hidden items-center justify-center transition-all duration-700 ${themeClass}`;
 
     const step = currentGamedata.steps[activeLevel];
     if (levelIndicator) levelIndicator.innerText = `${activeLevel + 1} / ${TOTAL_STEPS}`;
 
-    gamePreview.innerHTML = ""; 
+    // Estructura de la tarjeta:
+    // 'flex-1 flex flex-col justify-center' asegura el centrado vertical perfecto.
+    gamePreview.innerHTML = `
+        <div id="theme-icon" class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-2xl flex items-center justify-center shadow-xl border border-white/10 z-20" 
+             style="background-color: var(--primary)">
+            <i class="fa-solid ${getThemeIcon(themeClass)} text-white"></i>
+        </div>
 
-    if (step.type === 'intro') {
-        gamePreview.innerHTML = renderIntroMirror(step);
-    } else {
-        gamePreview.innerHTML = renderLevelMirror(step);
-    }
+        <div id="quiz-area" class="w-full flex-1 flex flex-col justify-center relative z-10">
+            ${step.type === 'intro' ? renderIntroMirror(step) : renderLevelMirror(step)}
+        </div>
+    `;
+
+    // Ajustar alturas tras el renderizado
+    setTimeout(() => {
+        document.querySelectorAll('#game-preview textarea').forEach(autoResize);
+    }, 0);
+}
+
+function getThemeIcon(theme) {
+    const icons = {
+        'theme-navidad': 'fa-tree',
+        'theme-san-valentin': 'fa-heart',
+        'theme-cumpleanos': 'fa-cake-candles',
+        'theme-hacker': 'fa-terminal',
+        'theme-default': 'fa-star'
+    };
+    return icons[theme] || icons['theme-default'];
 }
 
 /**
- * PORTADA (NIVEL 1)
+ * Renders la Portada (Intro)
  */
 function renderIntroMirror(step) {
     return `
-        <div class="flex flex-col items-center justify-center min-h-[400px] text-center space-y-8 animate-msg">
-            <div class="w-full">
-                <div class="editable-zone group text-center mb-4">
-                    <i class="fa-solid fa-pencil absolute opacity-0 group-hover:opacity-100 transition-opacity text-[10px]" 
-                       style="right: 5%; top: 10px;"></i>
-                    <textarea id="title-input" oninput="updateStepContent('title', this.value)" 
-                        rows="2" class="no-scrollbar">${step.title || "Título del Regalo"}</textarea>
-                    <span class="edit-hint">Editar título principal</span>
+        <div class="flex flex-col items-center justify-center text-center space-y-8 animate-fade-in py-4">
+            <div class="space-y-4 w-full">
+                <div class="editable-zone">
+                    <textarea id="title-input" 
+                        oninput="updateStepContent('title', this.value); autoResize(this)" 
+                        class="no-scrollbar w-full text-3xl md:text-4xl font-bold leading-tight bg-transparent border-none outline-none resize-none text-center font-title" 
+                        style="color: var(--primary)" rows="1">${step.title || ""}</textarea>
                 </div>
-
-                <div class="editable-zone group text-center">
-                    <i class="fa-solid fa-pencil absolute opacity-0 group-hover:opacity-100 transition-opacity text-[10px]" 
-                       style="right: 10%; top: 5px;"></i>
-                    <textarea id="subtitle-input" oninput="updateStepContent('subtitle', this.value)" 
-                        rows="2" class="no-scrollbar">${step.subtitle || "Un pequeño mensaje para empezar..."}</textarea>
+                <div class="editable-zone">
+                    <textarea id="subtitle-input" 
+                        oninput="updateStepContent('subtitle', this.value); autoResize(this)" 
+                        class="no-scrollbar w-full text-lg opacity-80 italic font-medium bg-transparent border-none outline-none resize-none text-center" 
+                        rows="1">${step.subtitle || ""}</textarea>
                 </div>
             </div>
-
-            <div class="w-full max-w-[220px] py-4 rounded-2xl font-black uppercase tracking-widest shadow-lg btn-primary text-white opacity-90 cursor-not-allowed text-xs">
-                Comenzar Aventura
-            </div>
+            <button class="w-full py-4 rounded-2xl font-black uppercase tracking-widest shadow-lg btn-primary text-white opacity-90 cursor-default">
+                Comenzar Experiencia
+            </button>
         </div>`;
 }
 
 /**
- * NIVELES DE JUEGO (2-6)
+ * Renders un Nivel
  */
 function renderLevelMirror(step) {
     return `
-        <div class="flex flex-col min-h-[400px] text-left animate-msg">
-            <div class="mb-8 editable-zone group">
-                <i class="fa-solid fa-pencil absolute right-2 top-0 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"></i>
-                <span class="text-xs font-mono font-bold uppercase tracking-widest leading-none" style="color: var(--primary)">NIVEL 0${activeLevel}</span>
-                <textarea id="level-title-input" oninput="updateStepContent('level_title', this.value)" 
-                    rows="1" class="text-2xl font-bold mt-2">${step.level_title || ""}</textarea>
+        <div class="flex flex-col text-left animate-fade-in py-2">
+            <div class="mb-6">
+                <span class="text-xs font-mono font-bold uppercase tracking-widest leading-none" style="color: var(--primary)">LEVEL 0${activeLevel}</span>
+                <div class="editable-zone mt-2">
+                    <textarea id="level-title-input" 
+                        oninput="updateStepContent('level_title', this.value); autoResize(this)" 
+                        class="no-scrollbar w-full text-2xl font-bold bg-transparent border-none outline-none resize-none font-title" 
+                        style="color: var(--primary)" rows="1">${step.level_title || ""}</textarea>
+                </div>
             </div>
             
-            <div class="flex-1 mb-8 editable-zone group">
-                <i class="fa-solid fa-pencil absolute right-2 top-0 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"></i>
-                <textarea id="question-area" oninput="updateStepContent('question', this.value)" 
-                    class="no-scrollbar text-lg font-medium leading-relaxed" rows="4">${step.question || ""}</textarea>
+            <div class="mb-8">
+                <div class="editable-zone">
+                    <textarea id="question-area" 
+                        oninput="updateStepContent('question', this.value); autoResize(this)" 
+                        class="no-scrollbar w-full text-lg font-medium leading-relaxed bg-transparent border-none outline-none resize-none" 
+                        rows="1">${step.question || ""}</textarea>
+                </div>
             </div>
 
             <div class="space-y-4">
-                <div class="input-mirror-container">
-                    <input type="text" oninput="updateStepContent('answer', this.value)" 
-                        class="answer-input-v" value="${step.answer || ""}" placeholder="Respuesta...">
-                </div>
-                <div class="w-full py-4 rounded-2xl font-black uppercase tracking-widest shadow-lg btn-primary text-white opacity-80 text-center text-xs">
-                    Verificar Código
-                </div>
+                <input type="text" oninput="updateStepContent('answer', this.value)"
+                    class="w-full bg-black/20 border border-white/10 rounded-2xl py-4 px-6 outline-none text-white font-medium text-center focus:border-purple-500 transition-all" 
+                    value="${step.answer || ""}" readonly placeholder="Respuesta correcta...">
+                
+                <button class="w-full py-4 rounded-2xl font-black uppercase tracking-widest shadow-lg btn-primary text-white opacity-80 cursor-default">
+                    Verificar Respuesta
+                </button>
             </div>
         </div>`;
 }
@@ -107,24 +140,20 @@ function updateStepContent(key, val) {
 
 async function manualSave() {
     const btn = document.getElementById('save-btn');
-    const originalContent = btn.innerHTML;
-    btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i> Guardando...';
-
+    if (!btn) return;
+    const original = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i>';
     try {
         await fetch('/save_experience', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ game_data: currentGamedata })
         });
-        btn.classList.replace('bg-slate-800', 'bg-green-600');
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> Guardado';
-        setTimeout(() => {
-            btn.classList.replace('bg-green-600', 'bg-slate-800');
-            btn.innerHTML = originalContent;
-        }, 2000);
-    } catch (e) {
-        btn.innerHTML = 'Error';
-        setTimeout(() => btn.innerHTML = originalContent, 2000);
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Guardar';
+        setTimeout(() => { btn.innerHTML = original; }, 2000);
+    } catch (e) { 
+        btn.innerHTML = 'Error'; 
+        setTimeout(() => btn.innerHTML = original, 2000); 
     }
 }
 
@@ -135,8 +164,11 @@ async function send() {
     const text = userInput.value.trim();
     if (!text) return;
 
+    const themeToPreserve = themeSelector.value;
     renderMessage(text, 'user');
     userInput.value = '';
+
+    const typingId = showTypingIndicator();
 
     try {
         const res = await fetch('/chat', {
@@ -146,17 +178,41 @@ async function send() {
         });
         const data = await res.json();
         
+        removeTypingIndicator(typingId);
         renderMessage(data.reply, 'model');
 
         if (data.reply.includes('###JSON_DATA###')) {
             const parts = data.reply.split('###JSON_DATA###');
-            const jsonStr = parts[1].trim();
-            currentGamedata = JSON.parse(jsonStr);
+            const newJson = JSON.parse(parts[1].trim());
+            newJson.theme = themeToPreserve;
+            currentGamedata = newJson;
             updatePreview();
         }
     } catch (e) {
+        removeTypingIndicator(typingId);
         renderMessage("Error al conectar con la IA.", 'model');
     }
+}
+
+function showTypingIndicator() {
+    const id = 'typing-' + Date.now();
+    const wrapper = document.createElement('div');
+    wrapper.id = id;
+    wrapper.className = 'flex justify-start w-full mb-4 animate-msg';
+    wrapper.innerHTML = `
+        <div class="bubble bubble-ai flex items-center gap-1.5 py-4 px-6">
+            <div class="typing-dot"></div>
+            <div class="typing-dot" style="animation-delay: 0.2s"></div>
+            <div class="typing-dot" style="animation-delay: 0.4s"></div>
+        </div>`;
+    chatWindow.appendChild(wrapper);
+    chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
+    return id;
+}
+
+function removeTypingIndicator(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
 }
 
 function renderMessage(text, role) {
@@ -172,7 +228,7 @@ function renderMessage(text, role) {
 }
 
 /**
- * 4. NAVEGACIÓN Y FINALIZACIÓN (MODAL PERSONALIZADO)
+ * 4. NAVEGACIÓN Y FINALIZACIÓN
  */
 function nextLevel() { if (activeLevel < TOTAL_STEPS - 1) { activeLevel++; updatePreview(); } }
 function prevLevel() { if (activeLevel > 0) { activeLevel--; updatePreview(); } }
@@ -188,33 +244,25 @@ function finalize() {
                     <h3 class="text-2xl font-bold text-white">Regalo Final</h3>
                     <p class="text-slate-400 text-sm">Escribe el regalo que verá el destinatario al completar el juego.</p>
                 </div>
-                <textarea id="final-gift-input" placeholder="Ej: Vuelo a París para dos personas..." 
-                       class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 outline-none focus:border-purple-500 transition-all text-sm text-white h-24 resize-none"></textarea>
+                <textarea id="final-gift-input" placeholder="Ej: Vuelo a París..." class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 outline-none focus:border-purple-500 transition-all text-sm text-white h-24 resize-none"></textarea>
                 <div class="flex gap-3">
                     <button onclick="document.getElementById('finalize-modal').remove()" class="flex-1 bg-white/5 hover:bg-white/10 py-3 rounded-xl font-bold text-xs transition-all uppercase tracking-widest">Cancelar</button>
                     <button onclick="confirmFinalize()" class="flex-1 bg-purple-600 hover:bg-purple-500 py-3 rounded-xl font-bold text-xs transition-all uppercase tracking-widest text-white shadow-lg">Confirmar</button>
                 </div>
             </div>
-        </div>
-    `;
+        </div>`;
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
 
 async function confirmFinalize() {
-    const giftInput = document.getElementById('final-gift-input');
-    const gift = giftInput.value.trim();
-    if (!gift) { giftInput.classList.add('border-red-500'); return; }
-
-    try {
-        await fetch('/save_experience', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ game_data: currentGamedata, real_gift: gift })
-        });
-        window.location.href = `/demo/${window.currentGameId}`;
-    } catch (e) {
-        alert("Error al guardar.");
-    }
+    const gift = document.getElementById('final-gift-input').value.trim();
+    if (!gift) return;
+    await fetch('/save_experience', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ game_data: currentGamedata, real_gift: gift })
+    });
+    window.location.href = `/demo/${window.currentGameId}`;
 }
 
 /**
@@ -222,14 +270,12 @@ async function confirmFinalize() {
  */
 document.addEventListener('DOMContentLoaded', () => {
     updatePreview();
-
-    // Sincronizar el selector de temas con el JSON
     if (themeSelector && currentGamedata) {
         themeSelector.value = currentGamedata.theme || 'theme-default';
         themeSelector.addEventListener('change', (e) => {
             currentGamedata.theme = e.target.value;
             updatePreview();
-            manualSave(); // Guardar automáticamente al cambiar de tema
+            manualSave();
         });
     }
 });
