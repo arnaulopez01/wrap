@@ -9,13 +9,13 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
-# Importamos solo el mapeo necesario de prompts.py
+# Importamos los prompts optimizados
 from prompts import PRODUCT_PROMPTS
 
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv("FLASK_KEY", "dw_standard_classic_2025")
+app.secret_key = os.getenv("FLASK_KEY", "dw_genz_fast_2025")
 
 # --- CONFIGURACIÓN DE BASE DE DATOS ---
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
@@ -27,17 +27,16 @@ db = SQLAlchemy(app)
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 MODEL_NAME = "gemini-2.5-flash"
 
-# --- MODELO DE DATOS MVP ---
+# --- MODELO DE DATOS ---
 class Experience(db.Model):
     __tablename__ = 'experiences'
     
     id = db.Column(db.String(8), primary_key=True)
-    template_name = db.Column(db.String(50)) # Ejemplo: 'san_valentin', 'hacker'
+    template_name = db.Column(db.String(50)) 
     game_data = db.Column(db.JSON, nullable=True) 
     real_gift = db.Column(db.Text, nullable=True)
-    is_paid = db.Column(db.Boolean, default=False) # Diferencia Demo de Final
+    is_paid = db.Column(db.Boolean, default=False)
     
-    iterations = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     finalized_at = db.Column(db.DateTime, nullable=True)
 
@@ -45,33 +44,32 @@ class Experience(db.Model):
 
 @app.route("/")
 def landing():
-    """Página de inicio con los dos modos: Mini Escape y Premium (próximamente)"""
+    """Landing page enfocada a conversión rápida"""
     return render_template("landing.html")
 
 @app.route("/templates")
 def templates_selector():
-    """El usuario elige una temática antes de entrar al editor"""
+    """Selección visual de base"""
     return render_template("templates_selector.html")
 
 @app.route("/create/<template_id>")
 def initialize_game(template_id):
-    """Carga la plantilla JSON y crea el registro en la DB"""
+    """
+    Carga inicial silenciosa. 
+    Crea el ID y redirige al 'Creator' donde saltará el modal de IA.
+    """
     game_id = str(uuid.uuid4())[:8]
     
-    # Buscamos el archivo JSON de la plantilla elegida
     template_path = os.path.join(app.root_path, 'static/js/plantillas', f'{template_id}.json')
     
     try:
+        # Cargamos la base, pero el usuario no la verá hasta que la IA la procese
         if os.path.exists(template_path):
             with open(template_path, 'r', encoding='utf-8') as f:
                 initial_data = json.load(f)
         else:
-            # Plantilla por defecto si no existe la específica
-            initial_data = {
-                "title": "Nueva Aventura",
-                "steps": [{"type": "intro", "title": "Bienvenido", "subtitle": "Tu aventura comienza ahora"}] + 
-                         [{"type": "level", "level_number": i, "level_title": f"Reto {i}", "question": "Pregunta...", "answer": "Respuesta"} for i in range(1,6)]
-            }
+            # Fallback seguro
+            initial_data = {"theme": "theme-default", "steps": []}
 
         new_experience = Experience(
             id=game_id, 
@@ -82,7 +80,6 @@ def initialize_game(template_id):
         db.session.add(new_experience)
         db.session.commit()
         
-        # Guardamos en sesión para el editor
         session['current_game_id'] = game_id
         session['chat_history'] = []
         
@@ -90,55 +87,33 @@ def initialize_game(template_id):
     
     except Exception as e:
         db.session.rollback()
-        print(f"ERROR INIT: {e}")
-        return "Error al crear la experiencia.", 500
+        return "Error al iniciar.", 500
 
 @app.route("/creator/<game_id>")
 def creator(game_id):
-    """Editor con IA y vista previa"""
+    """
+    Punto neurálgico. Ahora no es un editor, es un 'Playtest Room'.
+    El frontend decidirá si mostrar el modal de inicio o la demo.
+    """
     exp = Experience.query.get_or_404(game_id)
     return render_template("creator.html", initial_data=exp.game_data, game_id=game_id)
 
-# --- RUTAS DE JUEGO ---
-
-@app.route("/demo/<game_id>")
-def play_demo(game_id):
-    """Demo jugable: Con marca de agua y regalo bloqueado"""
-    exp = Experience.query.get_or_404(game_id)
-    return render_template("player.html", 
-                           game_data=json.dumps(exp.game_data), 
-                           real_gift=exp.real_gift,
-                           is_demo=True)
-
-@app.route("/experience/<game_id>")
-def play_experience(game_id):
-    """Experiencia final: Sin marca de agua y regalo visible (Solo si is_paid=True)"""
-    exp = Experience.query.get_or_404(game_id)
-    
-    if not exp.is_paid:
-        return redirect(url_for('play_demo', game_id=game_id))
-    
-    return render_template("player.html", 
-                           game_data=json.dumps(exp.game_data), 
-                           real_gift=exp.real_gift,
-                           is_demo=False)
-
-# --- CORE IA Y PERSISTENCIA ---
+# --- CORE IA (MODIFICADO PARA GENERACIÓN FAST) ---
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    """Interacción con Gemini para personalizar la plantilla"""
+    """
+    Procesa tanto la 'Gran Idea' inicial como los ajustes posteriores.
+    """
     user_message = request.json.get("message")
     current_json = request.json.get("current_json")
     game_id = session.get('current_game_id')
     
     history = session.get('chat_history', [])
-    
-    # Usamos siempre el prompt de mini_escape para el MVP
     system_instruction = PRODUCT_PROMPTS.get("mini_escape")
     
-    # Inyectamos el JSON actual para que la IA sepa qué está editando
-    full_instruction = f"{system_instruction}\n\nJSON ACTUAL A EDITAR:\n{json.dumps(current_json)}"
+    # Inyectamos contexto para que la IA actúe como un diseñador invisible
+    full_instruction = f"{system_instruction}\n\nJSON ACTUAL:\n{json.dumps(current_json)}"
 
     history.append({"role": "user", "content": user_message})
     
@@ -151,34 +126,43 @@ def chat():
         response = client.models.generate_content(
             model=MODEL_NAME,
             contents=gemini_history,
-            config=types.GenerateContentConfig(system_instruction=full_instruction, temperature=0.7)
+            config=types.GenerateContentConfig(
+                system_instruction=full_instruction, 
+                temperature=0.8 # Un poco más de creatividad para Gen Z
+            )
         )
         
         reply_text = response.text
+        json_clean = None
+
         if "###JSON_DATA###" in reply_text:
             parts = reply_text.split("###JSON_DATA###")
             json_clean = re.sub(r'```[a-z]*\n?|```', '', parts[1]).strip()
             
-            # Guardado automático en DB al recibir cambios de la IA
             if game_id:
                 exp = Experience.query.get(game_id)
                 if exp:
                     exp.game_data = json.loads(json_clean)
                     db.session.commit()
             
-            reply_text = f"{parts[0]}###JSON_DATA###{json_clean}"
+            reply_text = parts[0].strip() # Solo enviamos el texto narrativo al chat
 
         history.append({"role": "assistant", "content": reply_text})
         session['chat_history'] = history
         session.modified = True 
-        return jsonify({"reply": reply_text})
+        
+        return jsonify({
+            "reply": reply_text, 
+            "new_json": json.loads(json_clean) if json_clean else None
+        })
     except Exception as e:
-        print(f"GEMINI ERROR: {e}")
-        return jsonify({"reply": "Lo siento, ¿podrías repetirme esa idea?"}), 500
+        print(f"IA ERROR: {e}")
+        return jsonify({"reply": "¡Ups! Mi chispa creativa se ha apagado un segundo. ¿Me lo repites?"}), 500
+
+# --- PERSISTENCIA Y PAGOS ---
 
 @app.route("/save_experience", methods=["POST"])
 def save_experience():
-    """Guardado manual o cuando el usuario edita directamente en el preview"""
     data = request.json
     game_id = session.get('current_game_id')
     exp = Experience.query.get(game_id)
@@ -193,11 +177,18 @@ def save_experience():
         return jsonify({"success": True})
     return jsonify({"success": False}), 404
 
-# --- PASARELA DE PAGO SIMULADA ---
+@app.route("/experience/<game_id>")
+def play_experience(game_id):
+    """Vista final para el destinatario"""
+    exp = Experience.query.get_or_404(game_id)
+    if not exp.is_paid:
+        # En el nuevo flujo, redirigimos a una vista de "Pago Requerido" o demo
+        return render_template("player.html", game_data=json.dumps(exp.game_data), is_demo=True, game_id=game_id)
+    
+    return render_template("player.html", game_data=json.dumps(exp.game_data), real_gift=exp.real_gift, is_demo=False)
 
 @app.route("/pay/<game_id>")
 def simulate_payment(game_id):
-    """Ruta temporal para activar la experiencia tras el pago"""
     exp = Experience.query.get_or_404(game_id)
     exp.is_paid = True
     db.session.commit()

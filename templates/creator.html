@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Wrap | Editor de Experiencias</title>
+    <title>Digital Wrap | Creator Mode</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -14,140 +14,133 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/player.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/creator.css') }}">
 </head>
-<body class="h-screen flex flex-col overflow-hidden bg-[#0F172A] text-slate-200">
+<body class="h-screen overflow-hidden transition-all duration-700">
 
-    <header class="h-16 border-b border-white/5 flex items-center justify-between px-8 bg-[#0F172A] z-50 flex-none">
-        <div class="flex items-center gap-4">
-            <a href="/" class="text-slate-400 hover:text-white transition">
-                <i class="fa-solid fa-arrow-left text-lg"></i>
+    <header class="fixed top-0 left-0 w-full h-20 flex items-center justify-between px-6 z-40 pointer-events-none">
+        <div class="flex items-center gap-4 pointer-events-auto">
+            <a href="/templates" class="w-10 h-10 rounded-full bg-black/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-black/40 transition">
+                <i class="fa-solid fa-arrow-left"></i>
             </a>
-            <span class="font-bold tracking-tighter text-xl text-white uppercase">
-                Digital<span style="color: var(--primary)">Wrap</span>
-            </span>
+            <div class="font-bold tracking-tighter text-lg uppercase mix-blend-difference text-white">
+                DIGITAL<span class="text-purple-500">WRAP</span>
+            </div>
         </div>
-        
-        <div class="flex items-center gap-4">
-            <select id="theme-selector" class="bg-slate-800 border border-purple-500/30 text-xs rounded-lg px-3 py-2 text-purple-300 outline-none focus:border-purple-500 cursor-pointer uppercase tracking-widest font-bold">
-                <option value="theme-default">✨ Tema: Clásico</option>
-                <option value="theme-navidad">🎄 Tema: Navidad</option>
-                <option value="theme-san-valentin">❤️ Tema: San Valentín</option>
-                <option value="theme-cumpleanos">🎂 Tema: Cumpleaños</option>
-                <option value="theme-hacker">💻 Tema: Hacker</option>
+
+        <div class="bg-black/20 backdrop-blur-md p-1 rounded-2xl border border-white/10 pointer-events-auto">
+            <select id="theme-selector" class="bg-transparent text-[10px] font-black uppercase tracking-widest px-4 py-2 outline-none cursor-pointer text-white">
+                <option value="theme-default">✨ Clásico</option>
+                <option value="theme-navidad">🎄 Navidad</option>
+                <option value="theme-san-valentin">❤️ Amor</option>
+                <option value="theme-cumpleanos">🎂 Cumple</option>
+                <option value="theme-hacker">💻 Hacker</option>
+                <option value="theme-aventura">🧭 Aventura</option>
             </select>
         </div>
     </header>
 
-    <div class="flex flex-1 overflow-hidden relative">
-        
-        <main id="chat-section" class="w-full md:w-1/2 flex flex-col relative bg-[#0F172A] border-r border-white/5 transition-all">
-            <div id="chat-window" class="flex-1 overflow-y-auto p-6 md:p-10 space-y-6 custom-scroll">
-                <div class="flex justify-start animate-msg">
-                    <div class="bubble bubble-ai animate-msg">
-                        <div class="space-y-4">
-                            <div class="flex items-center gap-3 mb-2">
-                                <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
-                                    <i class="fa-solid fa-wand-magic-sparkles"></i>
-                                </div>
-                                <p class="font-bold text-white tracking-wide">¡Tu experiencia está lista para cobrar vida!</p>
-                            </div>
-
-                            <p class="opacity-80 text-sm leading-relaxed">He configurado la plantilla inicial. Aquí tienes algunas ejemplos de lo que me puedes pedir:</p>
-
-                            <div class="grid grid-cols-1 gap-3 py-2">
-                                <div class="flex items-start gap-3 bg-white/5 p-3 rounded-xl border border-white/5 hover:bg-white/10 transition-colors">
-                                    <i class="fa-solid fa-key mt-1 text-purple-400 text-xs"></i>
-                                    <p class="text-[13px]">"Quiero acertijos de pokémon" o "Haz acertijos matemáticos".</p>
-                                </div>
-                                
-                                <div class="flex items-start gap-3 bg-white/5 p-3 rounded-xl border border-white/5 hover:bg-white/10 transition-colors">
-                                    <i class="fa-solid fa-brain mt-1 text-purple-400 text-xs"></i>
-                                    <p class="text-[13px]">"He escondido un código tras un cuadro, pon una pista para encontrarlo".</p>
-                                </div>
-
-                                <div class="flex items-start gap-3 bg-white/5 p-3 rounded-xl border border-white/5 hover:bg-white/10 transition-colors">
-                                    <i class="fa-solid fa-palette mt-1 text-purple-400 text-xs"></i>
-                                    <p class="text-[13px]">"Quiero una aventura por la selva"".</p>
-                                </div>
-                            </div>
-
-                            <hr class="border-white/5 my-2">
-
-                            <p class="text-xs italic opacity-60 text-center">Cuéntame tu idea y yo me encargo de la lógica...</p>
-                        </div>
-                    </div>
-                </div>
+    <main id="experience-viewport" class="relative w-full h-full flex items-center justify-center p-4">
+        <div id="game-container" class="max-w-md w-full glass-card p-8 rounded-[3rem] shadow-2xl relative z-10 mx-4 transition-all duration-500">
+            <div id="theme-icon" class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-2xl flex items-center justify-center shadow-xl border border-white/10" style="background-color: var(--primary)">
+                <i class="fa-solid fa-wand-magic-sparkles text-white"></i>
             </div>
-
-            <div class="h-24 px-6 bg-[#0F172A] border-t border-white/5 flex items-center flex-none">
-                <div class="relative w-full max-w-2xl mx-auto">
-                    <input type="text" id="user-input" 
-                           class="w-full bg-slate-800 border border-white/10 rounded-2xl py-4 pl-6 pr-14 outline-none focus:border-purple-500 transition-all text-sm text-white" 
-                           placeholder="Describe cambios o nuevos acertijos...">
-                    <button onclick="send()" class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-purple-600 hover:bg-purple-500 rounded-xl flex items-center justify-center shadow-lg transition-transform active:scale-95">
-                        <i class="fa-solid fa-paper-plane text-white text-sm"></i>
-                    </button>
-                </div>
-            </div>
-        </main>
-
-        <aside id="preview-section" 
-               class="hidden md:flex w-full md:w-1/2 preview-body-mock flex-col relative overflow-hidden items-center justify-center transition-all duration-700 {{ initial_data.theme or 'theme-default' }}">
             
-            <div class="flex-1 w-full flex items-center justify-center p-8 overflow-hidden">
-                <div id="game-preview" class="glass-card shadow-2xl relative transition-all duration-500 h-fit">
-                    </div>
-            </div>
-
-            <div id="editor-toolbar" class="h-24 px-8 flex items-center flex-none w-full transition-all border-t border-white/10">
-                <div class="flex items-center justify-between w-full max-w-4xl mx-auto">
-                    
-                    <button onclick="manualSave()" id="save-btn" class="flex items-center gap-2 btn-experience-style px-5 py-2.5 rounded-xl text-[10px] font-bold uppercase">
-                        <i class="fa-solid fa-floppy-disk"></i> Guardar
-                    </button>
-                    
-                    <div class="flex items-center gap-8">
-                        <button onclick="prevLevel()" class="nav-arrow-experience hover:scale-125 transition text-3xl">
-                            <i class="fa-solid fa-circle-chevron-left"></i>
-                        </button>
-                        <span id="level-indicator" class="text-sm font-mono font-bold tracking-[0.3em]">1 / 6</span>
-                        <button onclick="nextLevel()" class="nav-arrow-experience hover:scale-125 transition text-3xl">
-                            <i class="fa-solid fa-circle-chevron-right"></i>
-                        </button>
-                    </div>
-
-                    <button onclick="finalize()" class="btn-experience-style px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase">
-                        Jugar Demo <i class="fa-solid fa-check ml-1"></i>
-                    </button>
+            <div id="quiz-area">
+                <div class="flex flex-col items-center justify-center min-h-[300px] opacity-20">
+                    <i class="fa-solid fa-circle-notch animate-spin text-4xl"></i>
                 </div>
             </div>
-        </aside>
+        </div>
+    </main>
 
-        <button id="mobile-toggle-btn" onclick="toggleMobileView()" class="md:hidden fixed bottom-28 right-6 z-50 bg-purple-600 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center border-2 border-white/20 transition-all active:scale-90">
-            <i class="fa-solid fa-eye"></i>
+    <nav class="fixed bottom-10 left-0 w-full px-6 flex justify-between items-center z-40 max-w-lg mx-auto left-1/2 -translate-x-1/2 pointer-events-none">
+        <button onclick="openRefinement()" class="pointer-events-auto flex items-center gap-3 bg-black/40 backdrop-blur-xl border border-white/10 px-6 py-4 rounded-3xl hover:bg-black/60 transition-all active:scale-95 text-white">
+            <i class="fa-solid fa-sparkles text-purple-400"></i>
+            <span class="text-[10px] font-black uppercase tracking-widest">Ajustar</span>
         </button>
+
+        <button onclick="openGiftModal()" class="pointer-events-auto bg-white text-black px-8 py-4 rounded-3xl font-black uppercase tracking-widest shadow-2xl hover:bg-purple-600 hover:text-white transition-all active:scale-95 text-xs">
+            ¡Me gusta! <i class="fa-solid fa-arrow-right ml-2"></i>
+        </button>
+    </nav>
+
+    <div id="initial-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#0F172A] p-8 transition-all duration-500">
+        <div class="max-w-md w-full space-y-10 animate-fade-in">
+            <div class="space-y-4">
+                <h2 class="text-5xl font-black tracking-tighter text-white leading-none">¿Cuál es <span class="text-purple-500">la idea?</span></h2>
+                <p class="text-slate-400 text-lg font-medium">Describe tu reto en una frase. Nosotros creamos la magia.</p>
+            </div>
+            
+            <div class="space-y-6">
+                <textarea id="user-idea" placeholder="Ej: Un escape de Harry Potter para el cumple de mi hermano..." 
+                    class="w-full bg-white/5 border-2 border-white/10 rounded-[2.5rem] p-8 text-xl text-white outline-none focus:border-purple-500 transition-all h-48 resize-none shadow-2xl"></textarea>
+                
+                <button type="button" onclick="generateInitialGame()" class="w-full bg-purple-600 py-6 rounded-[2rem] text-white font-black uppercase tracking-widest text-lg shadow-[0_20px_40px_rgba(147,51,234,0.3)] hover:bg-purple-500 transition-all active:scale-95">
+                    Generar Juego <i class="fa-solid fa-bolt ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading-overlay" class="fixed inset-0 z-[150] hidden flex-col items-center justify-center bg-[#0F172A]/95 backdrop-blur-2xl">
+        <div class="relative w-32 h-32 flex items-center justify-center">
+            <div class="absolute inset-0 border-4 border-purple-500/20 rounded-full"></div>
+            <div class="absolute inset-0 border-4 border-purple-500 rounded-full border-t-transparent animate-spin"></div>
+            <i class="fa-solid fa-wand-magic-sparkles text-3xl text-purple-400 animate-pulse"></i>
+        </div>
+        <div class="mt-8 text-center space-y-2">
+            <p id="loading-text" class="text-2xl font-black tracking-tighter uppercase text-white">Generando...</p>
+            <p class="text-purple-400 text-xs font-bold uppercase tracking-[0.3em] animate-pulse">Cifrando acertijos</p>
+        </div>
+    </div>
+
+    <div id="gift-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6 bg-black/80 backdrop-blur-md">
+        <div class="bg-slate-900 border border-white/10 p-10 rounded-[3rem] max-w-sm w-full text-center space-y-8 shadow-2xl">
+            <div class="w-20 h-20 bg-green-500/20 rounded-3xl flex items-center justify-center mx-auto text-green-400 text-3xl">
+                <i class="fa-solid fa-gift"></i>
+            </div>
+            <div class="space-y-2">
+                <h3 class="text-3xl font-black text-white uppercase tracking-tighter">Regalo Final</h3>
+                <p class="text-slate-400 text-sm">¿Qué descubrirá el destinatario al completar los 5 niveles?</p>
+            </div>
+            <textarea id="final-gift-input" placeholder="Ej: Un código de 20€ en Amazon o 'Mira debajo del sofá'..." 
+                class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-purple-500 transition-all text-white h-32 resize-none"></textarea>
+            
+            <div class="flex flex-col gap-3">
+                <button onclick="confirmFinalize()" class="w-full bg-purple-600 py-5 rounded-2xl font-black uppercase tracking-widest text-white shadow-lg active:scale-95 transition">Confirmar y Finalizar</button>
+                <button onclick="closeGiftModal()" class="text-[10px] text-slate-500 font-bold uppercase tracking-widest hover:text-white transition">Seguir editando</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="refinement-panel" class="fixed inset-0 z-[100] hidden flex items-end justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div class="bg-slate-900 border border-white/10 p-8 rounded-[2.5rem] w-full max-w-lg mb-4 animate-slide-up shadow-2xl">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="font-black uppercase tracking-[0.2em] text-[10px] text-purple-400">Personalizar reto</h3>
+                <button onclick="closeRefinement()" class="w-8 h-8 flex items-center justify-center bg-white/5 rounded-full"><i class="fa-solid fa-xmark text-slate-500 text-xs"></i></button>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3 mb-8">
+                <button onclick="refine('Más difícil')" class="bg-white/5 p-5 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-white/5 hover:border-purple-500 transition text-white">🧠 Más difícil</button>
+                <button onclick="refine('Más divertido y gracioso')" class="bg-white/5 p-5 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-white/5 hover:border-purple-500 transition text-white">🤪 Más divertido</button>
+                <button onclick="refine('Hazlo mucho más corto')" class="bg-white/5 p-5 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-white/5 hover:border-purple-500 transition text-white">⚡ Más corto</button>
+                <button onclick="refine('Cambia el tema')" class="bg-white/5 p-5 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-white/5 hover:border-purple-500 transition text-white">🎭 Cambia tono</button>
+            </div>
+
+            <div class="relative">
+                <input type="text" id="refine-custom" placeholder="O pide un cambio específico..." 
+                    class="w-full bg-white/5 border border-white/10 rounded-2xl py-5 px-6 outline-none focus:border-purple-500 text-sm text-white">
+                <button onclick="refineCustom()" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-purple-600 rounded-xl flex items-center justify-center shadow-lg active:scale-90 transition">
+                    <i class="fa-solid fa-paper-plane text-xs text-white"></i>
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Datos iniciales desde el servidor
         window.serverData = {{ initial_data | tojson | safe }};
         window.currentGameId = "{{ game_id }}";
-
-        function toggleMobileView() {
-            const preview = document.getElementById('preview-section');
-            const chat = document.getElementById('chat-section');
-            const btn = document.getElementById('mobile-toggle-btn');
-            
-            if (preview.classList.contains('hidden')) {
-                preview.classList.replace('hidden', 'flex');
-                chat.classList.add('hidden');
-                btn.innerHTML = '<i class="fa-solid fa-comment"></i>';
-            } else {
-                preview.classList.replace('flex', 'hidden');
-                chat.classList.remove('hidden');
-                btn.innerHTML = '<i class="fa-solid fa-eye"></i>';
-            }
-        }
     </script>
+    <script src="{{ url_for('static', filename='js/player.js') }}"></script>
     <script src="{{ url_for('static', filename='js/creator.js') }}"></script>
 </body>
 </html>
