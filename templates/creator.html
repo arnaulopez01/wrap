@@ -42,8 +42,38 @@
         <main id="chat-section" class="w-full md:w-1/2 flex flex-col relative bg-[#0F172A] border-r border-white/5 transition-all">
             <div id="chat-window" class="flex-1 overflow-y-auto p-6 md:p-10 space-y-6 custom-scroll">
                 <div class="flex justify-start animate-msg">
-                    <div class="bubble bubble-ai">
-                        <p>¡Hola! El editor está listo. Ahora el fondo y los controles se adaptan al tema seleccionado al instante.</p>
+                    <div class="bubble bubble-ai animate-msg">
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                </div>
+                                <p class="font-bold text-white tracking-wide">¡Tu experiencia está lista para cobrar vida!</p>
+                            </div>
+
+                            <p class="opacity-80 text-sm leading-relaxed">He configurado la plantilla inicial. Aquí tienes algunas ejemplos de lo que me puedes pedir:</p>
+
+                            <div class="grid grid-cols-1 gap-3 py-2">
+                                <div class="flex items-start gap-3 bg-white/5 p-3 rounded-xl border border-white/5 hover:bg-white/10 transition-colors">
+                                    <i class="fa-solid fa-key mt-1 text-purple-400 text-xs"></i>
+                                    <p class="text-[13px]">"Quiero acertijos de pokémon" o "Haz acertijos matemáticos".</p>
+                                </div>
+                                
+                                <div class="flex items-start gap-3 bg-white/5 p-3 rounded-xl border border-white/5 hover:bg-white/10 transition-colors">
+                                    <i class="fa-solid fa-brain mt-1 text-purple-400 text-xs"></i>
+                                    <p class="text-[13px]">"He escondido un código tras un cuadro, pon una pista para encontrarlo".</p>
+                                </div>
+
+                                <div class="flex items-start gap-3 bg-white/5 p-3 rounded-xl border border-white/5 hover:bg-white/10 transition-colors">
+                                    <i class="fa-solid fa-palette mt-1 text-purple-400 text-xs"></i>
+                                    <p class="text-[13px]">"Quiero una aventura por la selva"".</p>
+                                </div>
+                            </div>
+
+                            <hr class="border-white/5 my-2">
+
+                            <p class="text-xs italic opacity-60 text-center">Cuéntame tu idea y yo me encargo de la lógica...</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -86,7 +116,7 @@
                     </div>
 
                     <button onclick="finalize()" class="btn-experience-style px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase">
-                        Finalizar <i class="fa-solid fa-check ml-1"></i>
+                        Jugar Demo <i class="fa-solid fa-check ml-1"></i>
                     </button>
                 </div>
             </div>
