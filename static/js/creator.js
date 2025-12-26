@@ -1,6 +1,8 @@
 /**
- * DIGITAL WRAP - CREATOR ENGINE (CLEAN SLATE UPDATE)
- * - Navegación instantánea sin overlays de carga.
+ * DIGITAL WRAP - CREATOR ENGINE (TEMPLATE + LOCAL LOADER FIX)
+ * - Navegación instantánea.
+ * - Lógica de plantillas locales RESTAURADA.
+ * - Loader integrado en el contenedor de preview para ajustes.
  */
 
 // 1. SINCRONIZACIÓN DE ESTADO GLOBAL
@@ -45,9 +47,25 @@ function setupEventListeners() {
     }
 }
 
+// --- UI ENGINE: LOADER LOCAL (DENTRO DEL CONTAINER) ---
+window.showLocalLoader = function() {
+    const quizArea = document.getElementById('quiz-area');
+    if (quizArea) {
+        quizArea.innerHTML = `
+            <div class="flex flex-col items-center justify-center min-h-[300px] animate-fade-in text-center">
+                <div class="relative mb-6">
+                    <div class="absolute inset-0 bg-purple-500/20 blur-2xl rounded-full animate-pulse"></div>
+                    <i class="fa-solid fa-circle-notch animate-spin text-4xl text-purple-500 relative z-10"></i>
+                </div>
+                <p class="text-[10px] font-black uppercase tracking-[0.3em] opacity-40">Ajustando la realidad...</p>
+            </div>`;
+    }
+};
+
 // --- LOGICA DE CARGA DE PLANTILLAS LOCALES ---
 async function loadLocalTemplate(filename) {
     window.hideModal('initial-modal');
+    window.showLocalLoader(); // Loader local mientras carga el JSON
 
     try {
         const response = await fetch(`/static/plantillas/${filename}`);
@@ -70,6 +88,7 @@ async function loadLocalTemplate(filename) {
 // 3. GENERACIÓN POR IA / PRESETS
 async function executeGeneration(prompt) {
     window.hideModal('initial-modal');
+    window.showLocalLoader(); // Loader local para IA
 
     try {
         const response = await fetch('/chat', {
@@ -81,9 +100,11 @@ async function executeGeneration(prompt) {
         if (data.new_json) {
             window.gamedata = data.new_json;
             window.initPlaytest();
+            window.saveSilent();
         }
     } catch (e) {
-        window.showModal('initial-modal');
+        console.error("AI Error:", e);
+        window.initPlaytest(); // Revertir a estado estable si falla
     }
 }
 
@@ -105,6 +126,37 @@ window.generatePreset = function(presetKey) {
 window.generateInitialGame = function() {
     const idea = document.getElementById('user-idea')?.value.trim();
     if (idea) executeGeneration(idea);
+};
+
+// --- LOGICA DE REFINAMIENTO (AJUSTES) ---
+window.refine = async function(adjustment) {
+    window.hideModal('refinement-panel');
+    window.showLocalLoader(); // Loader local activado para ajustes
+
+    try {
+        const response = await fetch('/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                message: `AJUSTE: ${adjustment}`, 
+                current_json: window.gamedata 
+            })
+        });
+        const data = await response.json();
+        if (data.new_json) {
+            window.gamedata = data.new_json;
+            window.initPlaytest();
+            window.saveSilent();
+        }
+    } catch (e) {
+        console.error("Error en refinamiento:", e);
+        window.initPlaytest();
+    }
+};
+
+window.refineCustom = function() {
+    const val = document.getElementById('refine-custom')?.value.trim();
+    if (val) window.refine(val);
 };
 
 // 4. MOTOR DEL EDITOR (PREVIEW)
@@ -135,6 +187,7 @@ window.applyVisualTheme = function() {
 
 window.renderActiveStep = function() {
     const quizArea = document.getElementById('quiz-area');
+    if (!window.gamedata.steps) return;
     const step = window.gamedata.steps[window.currentStepIdx];
     if (!step || !quizArea) return;
 
@@ -214,6 +267,7 @@ window.confirmFinalize = async function() {
     const gift = giftInput?.value.trim();
     if (!gift) { giftInput?.classList.add('border-red-500', 'animate-shake'); return; }
 
+    window.showLocalLoader(); // Loader local también para el guardado final
     try {
         await fetch('/save_experience', {
             method: 'POST',
@@ -223,5 +277,6 @@ window.confirmFinalize = async function() {
         window.location.href = `/demo/${window.currentGameId}`;
     } catch (e) {
         console.error("Error al finalizar");
+        window.initPlaytest();
     }
 };
