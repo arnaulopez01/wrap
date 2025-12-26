@@ -1,18 +1,53 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,700&family=Lexend:wght@400;700&family=Montserrat:wght@700;900&display=swap');
 
 :root {
+    /* Variables dinámicas (La IA las sobreescribirá) */
     --primary: #9333EA;
     --secondary: #06B6D4;
     --bg: #0F172A;
+    
+    /* Variables de fuente dinámicas */
+    --font-title: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    /* Usamos las variables para que el JS tenga control total */
+    font-family: var(--font-body);
     background-color: var(--bg);
     color: white;
+    
+    margin: 0;
     scroll-behavior: smooth;
+    
+    /* EL SECRETO: Transición suave para que el cambio de la IA no sea brusco */
+    transition: background-color 0.8s ease, color 0.5s ease, font-family 0.5s ease;
 }
 
-h1, h2, h3 { 
-    font-family: 'Space Grotesk', sans-serif; 
+/* Aplicamos la fuente de título de forma dinámica */
+h1, h2, h3, .font-title { 
+    font-family: var(--font-title); 
+    transition: font-family 0.5s ease;
+}
+
+/* Forzamos que los botones y elementos principales usen el color primario de la IA */
+.btn-primary {
+    background-color: var(--primary) !important;
+    transition: background-color 0.5s ease, transform 0.2s ease;
+}
+
+.text-primary {
+    color: var(--primary) !important;
+}
+
+/* Utility para el scrollbar (para que combine con el tema) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
 }

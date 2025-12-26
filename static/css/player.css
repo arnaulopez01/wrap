@@ -1,6 +1,6 @@
-/* --- PLAYER.CSS --- */
+/* --- PLAYER.CSS (AI ART DIRECTION READY) --- */
 
-/* 1. ANIMACIONES ESCENCIALES */
+/* 1. ANIMACIONES ESENCIALES */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -20,50 +20,57 @@
     animation: shake 0.4s ease-in-out;
 }
 
-/* 2. CONTENEDOR PRINCIPAL (GLASSMorphism) */
+/* 2. CONTENEDOR PRINCIPAL (GLASSMorphism Dinámico) */
 #game-container {
     background: var(--card-bg);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     border: 1px solid var(--card-border);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    transition: all 0.5s ease;
+    /* Sombra con resplandor del color primario de la IA */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 30px -5px rgba(var(--primary-rgb, 147, 51, 234), 0.15);
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 /* 3. TIPOGRAFÍAS Y COLORES DINÁMICOS */
 h1, h2, .font-title {
-    font-family: var(--title-font);
+    font-family: var(--font-title);
     color: var(--primary);
     letter-spacing: -0.02em;
+    transition: color 0.5s ease;
 }
 
 p {
-    font-family: var(--font-family);
+    font-family: var(--font-body);
     color: var(--text-main);
     line-height: 1.6;
+    transition: color 0.5s ease;
 }
 
 /* 4. FORMULARIO DE RESPUESTA */
 #player-answer {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
     color: var(--text-main);
     transition: all 0.3s ease;
     text-align: center;
+    font-family: var(--font-body);
 }
 
 #player-answer:focus {
     border-color: var(--primary);
-    background: rgba(0, 0, 0, 0.3);
-    box-shadow: 0 0 15px rgba(var(--primary-rgb, 124, 58, 237), 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    /* Glow dinámico en el input */
+    box-shadow: 0 0 15px -3px rgba(var(--primary-rgb, 147, 51, 234), 0.3);
 }
 
 /* 5. ESTADOS DE LA DEMO (BLOQUEO) */
 .blur-gift {
-    filter: blur(8px);
-    opacity: 0.3;
+    filter: blur(12px);
+    opacity: 0.2;
     user-select: none;
     pointer-events: none;
+    transition: all 0.8s ease;
 }
 
 .watermark-text {
@@ -71,45 +78,48 @@ p {
     z-index: 0;
     font-size: 10vw;
     font-weight: 900;
-    opacity: 0.03;
+    opacity: 0.05;
     pointer-events: none;
-    color: var(--text-main);
+    color: var(--primary); /* La marca de agua ahora es del color del tema */
     text-transform: uppercase;
+    font-family: var(--font-title);
 }
 
 /* 6. BOTONES TEMATIZADOS */
 .btn-primary {
     background-color: var(--primary) !important;
-    color: white;
+    color: white !important;
+    font-family: var(--font-body);
     font-weight: 800;
     transition: all 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .btn-primary:hover {
-    filter: brightness(1.1);
+    filter: brightness(1.2);
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3);
-}
-
-.btn-primary:active {
-    transform: translateY(0);
+    box-shadow: 0 15px 30px -5px rgba(var(--primary-rgb, 147, 51, 234), 0.4);
 }
 
 /* 7. FEEDBACK DE ERROR */
 #error-msg {
-    color: #f87171; /* Rojo suave */
-    font-weight: 600;
+    color: #f87171; 
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
 }
 
 /* 8. AREA DE RECOMPENSA FINAL */
 .reward-box {
-    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
-    border: 2px dashed var(--accent);
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 100%);
+    /* El borde del regalo ahora usa el color de la IA */
+    border: 2px dashed var(--primary);
     padding: 2rem;
-    border-radius: 2rem;
+    border-radius: 2.5rem;
     position: relative;
     overflow: hidden;
+    transition: all 0.5s ease;
 }
 
 .reward-box::before {
@@ -119,7 +129,7 @@ p {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
-    opacity: 0.1;
+    background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+    opacity: 0.15;
     pointer-events: none;
 }
