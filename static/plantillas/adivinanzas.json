@@ -1,0 +1,45 @@
+{
+  "visual_config": {
+    "primary_color": "#FBBF24",
+    "bg_color": "#0F172A",
+    "theme_icon": "fa-lightbulb",
+    "font_family": "'Inter', sans-serif"
+  },
+  "steps": [
+    {
+      "type": "intro",
+      "title": "El Templo de los Enigmas",
+      "subtitle": "Cinco acertijos separan el regalo de tu ingenio. ¿Aceptas el reto?"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Nivel 1: El Invisible",
+      "question": "Vuelo sin alas, lloro sin ojos. El viento es mi camino y el cielo mi hogar. ¿Qué soy?",
+      "answer": "Nube"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Nivel 2: El Paradójico",
+      "question": "Cuanto más hay de mí, menos logras ver. Me escondo en los rincones y huyo de la luz. ¿Qué soy?",
+      "answer": "Oscuridad"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Nivel 3: El Frágil",
+      "question": "Soy tan delicado que, con solo mencionar mi nombre, me rompo en mil pedazos. ¿Qué soy?",
+      "answer": "Silencio"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Nivel 4: El Viajero Estático",
+      "question": "Tengo ciudades pero no casas, tengo montañas pero no árboles, tengo agua pero no peces. ¿Qué soy?",
+      "answer": "Mapa"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Nivel 5: El Infinito",
+      "question": "Soy el principio del fin y el fin de cada lugar. Soy el comienzo de la eternidad y el final del tiempo y el espacio. ¿Qué soy?",
+      "answer": "La letra E"
+    }
+  ]
+}

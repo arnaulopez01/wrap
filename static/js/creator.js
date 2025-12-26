@@ -1,7 +1,6 @@
 /**
  * DIGITAL WRAP - CREATOR ENGINE (CLEAN SLATE UPDATE)
- * - Navegación instantánea sin ventanas residuales.
- * - Limpieza total de modales al volver atrás (BFCache Fix).
+ * - Navegación instantánea sin overlays de carga.
  */
 
 // 1. SINCRONIZACIÓN DE ESTADO GLOBAL
@@ -9,24 +8,11 @@ window.gamedata = window.serverData || { steps: [] };
 window.currentStepIdx = 0; 
 window.currentGameId = window.currentGameId; 
 
-const loadingPhrases = [
-    "Estás a un refresco de crear una experiencia inolvidable",
-    "Lo importante no es el regalo, si no como lo entregas",
-    "Estamos creando algo único para ti"
-];
-
-// 2. PROTOCOLO DE ARRANQUE (Limpieza profunda en cada entrada)
+// 2. PROTOCOLO DE ARRANQUE
 window.addEventListener('pageshow', (event) => {
-    console.log("🔄 Entrada detectada: Ejecutando limpieza de UI...");
-    
-    // A. Cerramos el loader
-    window.hideLoading();
-    
-    // B. Cerramos CUALQUIER modal residual (Regalo, Ajustes, etc.)
     window.hideModal('gift-modal');
     window.hideModal('refinement-panel');
 
-    // C. Lógica de datos: ¿Editor o Inicio?
     const hasExistingGame = window.gamedata.steps && window.gamedata.steps.length > 0;
 
     if (hasExistingGame) {
@@ -37,7 +23,6 @@ window.addEventListener('pageshow', (event) => {
     }
 });
 
-// Listener para carga inicial desde URL
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
 });
@@ -60,22 +45,30 @@ function setupEventListeners() {
     }
 }
 
-// --- HELPER: Hex a RGB para Sombras ---
-function hexToRgb(hex) {
-    if (!hex) return "147, 51, 234";
+// --- LOGICA DE CARGA DE PLANTILLAS LOCALES ---
+async function loadLocalTemplate(filename) {
+    window.hideModal('initial-modal');
+
     try {
-        hex = hex.replace(/^#/, '');
-        const bigint = parseInt(hex, 16);
-        const r = (bigint >> 16) & 255;
-        const g = (bigint >> 8) & 255;
-        const b = bigint & 255;
-        return `${r}, ${g}, ${b}`;
-    } catch(e) { return "147, 51, 234"; }
+        const response = await fetch(`/static/plantillas/${filename}`);
+        if (!response.ok) throw new Error("No se pudo cargar la plantilla local");
+        
+        const data = await response.json();
+        window.gamedata = data;
+        
+        // Ejecución inmediata
+        window.initPlaytest();
+        window.saveSilent(); 
+
+    } catch (e) {
+        console.error("Error cargando plantilla:", e);
+        window.showModal('initial-modal');
+        alert("Hubo un error al cargar la plantilla.");
+    }
 }
 
-// 3. GENERACIÓN POR IA
+// 3. GENERACIÓN POR IA / PRESETS
 async function executeGeneration(prompt) {
-    window.showLoading();
     window.hideModal('initial-modal');
 
     try {
@@ -87,18 +80,28 @@ async function executeGeneration(prompt) {
         const data = await response.json();
         if (data.new_json) {
             window.gamedata = data.new_json;
-            setTimeout(() => {
-                window.hideLoading();
-                window.initPlaytest();
-            }, 1000);
+            window.initPlaytest();
         }
     } catch (e) {
-        window.hideLoading();
         window.showModal('initial-modal');
     }
 }
 
-window.generatePreset = function(ideaText) { executeGeneration(ideaText); };
+window.generatePreset = function(presetKey) { 
+    const templateMap = {
+        'adivinanzas': 'adivinanzas.json',
+        'logica': 'logica.json',
+        'escape': 'escape.json',
+        'detective': 'detective.json'
+    };
+
+    if (templateMap[presetKey]) {
+        loadLocalTemplate(templateMap[presetKey]);
+    } else {
+        executeGeneration(presetKey); 
+    }
+};
+
 window.generateInitialGame = function() {
     const idea = document.getElementById('user-idea')?.value.trim();
     if (idea) executeGeneration(idea);
@@ -172,7 +175,7 @@ window.nextStep = function() {
     window.renderActiveStep();
 };
 
-// 5. UTILIDADES UI (MODALES Y CARGA)
+// 5. UTILIDADES UI
 window.showModal = (id) => { 
     const el = document.getElementById(id); 
     if(el) { el.classList.remove('hidden'); el.style.display = 'flex'; }
@@ -183,30 +186,14 @@ window.hideModal = (id) => {
     if(el) { el.classList.add('hidden'); el.style.display = 'none'; }
 };
 
-window.showLoading = () => {
-    const overlay = document.getElementById('loading-overlay');
-    const textEl = document.getElementById('loading-text');
-    if (overlay) {
-        const phrase = loadingPhrases[Math.floor(Math.random() * loadingPhrases.length)];
-        if (textEl) textEl.innerText = phrase;
-        overlay.classList.remove('hidden');
-        overlay.style.display = 'flex';
-        overlay.classList.add('flex'); // Forzamos clase para CSS
-        overlay.style.pointerEvents = 'auto'; 
-    }
-};
-
-window.hideLoading = () => {
-    const overlay = document.getElementById('loading-overlay');
-    if (overlay) {
-        overlay.classList.remove('flex');
-        overlay.style.pointerEvents = 'none'; 
-        setTimeout(() => {
-            overlay.classList.add('hidden');
-            overlay.style.display = 'none';
-        }, 500);
-    }
-};
+function hexToRgb(hex) {
+    if (!hex) return "147, 51, 234";
+    try {
+        hex = hex.replace(/^#/, '');
+        const bigint = parseInt(hex, 16);
+        return `${(bigint >> 16) & 255}, ${(bigint >> 8) & 255}, ${bigint & 255}`;
+    } catch(e) { return "147, 51, 234"; }
+}
 
 // 6. PERSISTENCIA
 window.saveSilent = function() {
@@ -227,7 +214,6 @@ window.confirmFinalize = async function() {
     const gift = giftInput?.value.trim();
     if (!gift) { giftInput?.classList.add('border-red-500', 'animate-shake'); return; }
 
-    window.showLoading();
     try {
         await fetch('/save_experience', {
             method: 'POST',
@@ -235,5 +221,7 @@ window.confirmFinalize = async function() {
             body: JSON.stringify({ game_data: window.gamedata, real_gift: gift })
         });
         window.location.href = `/demo/${window.currentGameId}`;
-    } catch (e) { window.hideLoading(); }
+    } catch (e) {
+        console.error("Error al finalizar");
+    }
 };

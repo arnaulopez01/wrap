@@ -1,0 +1,45 @@
+{
+  "visual_config": {
+    "primary_color": "#F472B6",
+    "bg_color": "#0F172A",
+    "theme_icon": "fa-brain",
+    "font_family": "'Inter', sans-serif"
+  },
+  "steps": [
+    {
+      "type": "intro",
+      "title": "El Desafío de la Mente",
+      "subtitle": "La lógica te llevará de la A a la B. La imaginación a todas partes. ¿Podrás superar estos 5 niveles?"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Nivel 1: El Retrato",
+      "question": "Un hombre mira un retrato y dice: 'Hermanos y hermanas no tengo, pero el padre de este hombre es el hijo de mi padre'. ¿Quién es el del retrato?",
+      "answer": "Su hijo"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Nivel 2: El Calendario",
+      "question": "Algunos meses tienen 30 días, otros tienen 31. ¿Cuántos meses tienen 28 días?",
+      "answer": "12"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Nivel 3: Operaciones Mentales",
+      "question": "Divide 30 por 0.5 y súmale 10. ¿Cuál es el resultado final?",
+      "answer": "70"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Nivel 4: El Caracol",
+      "question": "Un caracol está en el fondo de un pozo de 10 metros. Cada día sube 3 metros y cada noche baja 2 metros. ¿En cuántos días saldrá del pozo?",
+      "answer": "8"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Nivel 5: La Secuencia Lógica",
+      "question": "Observa esta serie: U, D, T, C, C, S, S, O, N... ¿Cuál es la siguiente letra?",
+      "answer": "D"
+    }
+  ]
+}

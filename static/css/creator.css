@@ -19,12 +19,12 @@ body {
 #game-container {
     transform: scale(1);
     transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-    /* Sombra dinámica con resplandor del color de la IA */
+    /* Sombra dinámica con resplandor del color de la temática */
     box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.7), 
                 0 0 40px -10px rgba(var(--primary-rgb, 147, 51, 234), 0.2);
 }
 
-/* --- 3. OVERLAYS Y MODALES (FLUJO DE IDEACIÓN) --- */
+/* --- 3. OVERLAYS Y MODALES --- */
 .fixed.inset-0 {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -36,7 +36,7 @@ body {
     transition: background-color 0.8s ease, opacity 0.5s ease;
 }
 
-/* Tarjetas de Opciones (Presets) */
+/* Tarjetas de Categorías (Presets) */
 #initial-modal .glass-card {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -51,18 +51,15 @@ body {
     box-shadow: 0 15px 30px -10px rgba(var(--primary-rgb, 147, 51, 234), 0.3);
 }
 
-/* --- FIX DEFINITIVO: INPUT SIN RECUADROS INTERNOS --- */
+/* --- 4. INPUT PERSONALIZADO (FIX RING & OUTLINE) --- */
 #user-idea {
     font-family: var(--font-body);
     background: transparent !important;
     border: none !important;
-    
-    /* Matamos cualquier tipo de borde o línea de enfoque del navegador */
     outline: none !important;
-    outline: 0 !important;
     box-shadow: none !important;
     
-    /* Matamos específicamente el 'ring' de Tailwind que causa el recuadro interno */
+    /* Matamos el 'ring' de Tailwind y el focus nativo */
     --tw-ring-offset-shadow: 0 0 #0000 !important;
     --tw-ring-shadow: 0 0 #0000 !important;
     --tw-ring-color: transparent !important;
@@ -70,31 +67,17 @@ body {
     
     appearance: none;
     -webkit-appearance: none;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
 }
 
-/* Forzamos que en focus no aparezca absolutamente nada interno */
-#user-idea:focus, 
-#user-idea:active,
-#user-idea:focus-visible {
-    outline: none !important;
-    border: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
-    --tw-ring-color: transparent !important;
-    --tw-ring-width: 0px !important;
-}
-
-/* El contenedor exterior (el que sí brilla al hacer focus) */
+/* Contenedor exterior del input con brillo al hacer focus */
 .focus-within\:border-purple-500:focus-within {
     border-color: var(--primary) !important;
     box-shadow: 0 0 25px -5px rgba(var(--primary-rgb, 147, 51, 234), 0.5);
-    background: rgba(255, 255, 255, 0.07); /* Ligero brillo de feedback */
+    background: rgba(255, 255, 255, 0.07);
     transition: all 0.3s ease;
 }
 
-/* --- 4. ACCIONES FLOTANTES (UI REACTIVA) --- */
+/* --- 5. BOTONES DE NAVEGACIÓN BLANCOS Y SIMÉTRICOS --- */
 header, nav {
     pointer-events: none;
 }
@@ -103,15 +86,37 @@ header *, nav * {
     pointer-events: auto;
 }
 
-button {
+.btn-nav-white {
+    min-width: 160px; /* Evita deformaciones */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-button:active {
+/* Color del icono Ajustar: por defecto el de la temática */
+.btn-nav-white i.fa-sparkles {
+    color: var(--primary);
+    transition: color 0.3s ease;
+}
+
+/* Hover inteligente: fondo cambia al color del tema */
+.btn-nav-white:hover {
+    background-color: var(--primary) !important;
+    color: white !important;
+    box-shadow: 0 15px 30px -5px rgba(var(--primary-rgb), 0.5);
+}
+
+/* Al hacer hover, forzamos que el icono pase a blanco */
+.btn-nav-white:hover i {
+    color: white !important;
+}
+
+.btn-nav-white:active {
     transform: scale(0.92);
 }
 
-/* --- 5. PANEL DE REFINAMIENTO (SLIDE-UP) --- */
+/* --- 6. PANEL DE REFINAMIENTO (SLIDE-UP) --- */
 #refinement-panel {
     align-items: flex-end;
 }
@@ -128,31 +133,6 @@ button:active {
 @keyframes slideUp {
     from { transform: translateY(100%); }
     to { transform: translateY(0); }
-}
-
-/* --- 6. LOADING STATE (AURA LOADER) --- */
-#loading-overlay {
-    display: none;       /* Oculto por defecto: CLAVE */
-    opacity: 0;          /* Invisible para fundido suave */
-    pointer-events: none; /* No bloquea clics si está oculto */
-    z-index: 200;
-    background: var(--bg, #0F172A);
-    filter: brightness(0.8);
-    transition: opacity 0.5s ease;
-}
-
-/* Clase activa controlada por JS */
-#loading-overlay.flex {
-    display: flex !important;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-#loading-text {
-    letter-spacing: 0.02em;
-    font-family: var(--font-title);
-    color: var(--primary);
-    text-shadow: 0 0 20px rgba(var(--primary-rgb), 0.5);
 }
 
 /* --- 7. SELECTOR DE TEMA --- */
@@ -194,5 +174,12 @@ button:active {
 
     #initial-modal h2 {
         font-size: 2rem;
+    }
+
+    .btn-nav-white {
+        min-width: 140px;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        font-size: 10px;
     }
 }

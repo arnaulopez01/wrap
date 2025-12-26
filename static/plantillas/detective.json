@@ -1,0 +1,45 @@
+{
+  "visual_config": {
+    "primary_color": "#94A3B8",
+    "bg_color": "#0F172A",
+    "theme_icon": "fa-user-secret",
+    "font_family": "'Inter', sans-serif"
+  },
+  "steps": [
+    {
+      "type": "intro",
+      "title": "Expediente X: El Caso Digital",
+      "subtitle": "Un crimen sin resolver, 5 pistas y un solo detective capaz de descifrarlo. ¿Tienes tu lupa a mano?"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Caso 1: La Coartada de la Nieve",
+      "question": "Un sospechoso afirma que estuvo caminando bajo la nieve durante 2 horas, pero sus zapatos están completamente secos. ¿Cómo se llama el objeto que delata su mentira?",
+      "answer": "Zapatos"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Caso 2: El Mensaje en el Espejo",
+      "question": "En la escena del crimen, la víctima escribió en el espejo empañado: '10101'. El detective sabe que no son números, sino una palabra vista al revés. ¿Qué palabra es?",
+      "answer": "HOLA"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Caso 3: El Químico Asesinado",
+      "question": "Un químico fue hallado muerto. En su mano tenía una nota con los símbolos: 'Ni-C-O-L-As'. La policía busca a un sospechoso. ¿Cómo se llama?",
+      "answer": "Nicolas"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Caso 4: El Calendario Sangriento",
+      "question": "Una víctima marca en un calendario los meses: Julio, Agosto, Septiembre, Octubre y Noviembre antes de morir. El asesino es uno de sus amigos: Jason, Harold o Smith. ¿Quién es?",
+      "answer": "Jason"
+    },
+    {
+      "type": "quiz",
+      "level_title": "Caso 5: La Habitación Cerrada",
+      "question": "Un hombre es hallado muerto en una habitación vacía con un charco de agua a su alrededor y sin armas. No hay muebles, solo el techo alto. ¿Sobre qué estaba subido antes de morir?",
+      "answer": "Hielo"
+    }
+  ]
+}
