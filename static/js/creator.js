@@ -57,7 +57,7 @@ window.showLocalLoader = function() {
                     <div class="absolute inset-0 bg-purple-500/20 blur-2xl rounded-full animate-pulse"></div>
                     <i class="fa-solid fa-circle-notch animate-spin text-4xl text-purple-500 relative z-10"></i>
                 </div>
-                <p class="text-[10px] font-black uppercase tracking-[0.3em] opacity-40">Ajustando la realidad...</p>
+                <p class="text-[10px] font-black uppercase tracking-[0.3em] opacity-40">Ajustando la experiencia...</p>
             </div>`;
     }
 };
