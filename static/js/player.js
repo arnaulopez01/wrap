@@ -235,7 +235,7 @@ function showFinalReward() {
                 </div>
 
                 <div class="pt-6 space-y-4 px-4">
-                    <a href="/pay/${window.currentGameId || ''}" class="block w-full py-5 rounded-2xl font-black uppercase tracking-widest shadow-2xl transition-all active:scale-95 text-white btn-primary">
+                    <a href="${paymentLink}" class="block w-full py-5 rounded-2xl font-black uppercase tracking-widest shadow-2xl transition-all active:scale-95 text-white btn-primary">
                         Desbloquear Regalo (1,99€)
                     </a>
                     <p class="text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">Enlace permanente + QR incluido</p>

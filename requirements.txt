@@ -4,3 +4,4 @@ google-genai
 requests
 flask-sqlalchemy
 psycopg2-binary
+stripe

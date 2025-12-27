@@ -9,6 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+import stripe
 
 # Importamos los prompts optimizados desde tu archivo externo
 from prompts import PRODUCT_PROMPTS
@@ -17,6 +18,8 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_KEY", "dw_genz_fast_2025")
+
+stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
 # --- CONFIGURACIÓN DE BASE DE DATOS ---
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
@@ -242,11 +245,62 @@ def play_experience(game_id):
                          is_demo=False)
 
 @app.route("/pay/<game_id>")
-def simulate_payment(game_id):
+def pay(game_id):
     exp = Experience.query.get_or_404(game_id)
-    exp.is_paid = True
-    db.session.commit()
-    return redirect(url_for('play_experience', game_id=game_id))
+    
+    try:
+        # Creamos la sesión de Checkout
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'eur',
+                    'product_data': {
+                        'name': f'Acceso Total: {exp.game_data.get("title", "Tu Experiencia")}',
+                    },
+                    'unit_amount': 199, # 1.99€ (puedes cambiarlo)
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            # Metadatos: Clave para que el webhook sepa qué juego activar
+            metadata={'game_id': game_id},
+            success_url=os.getenv("DOMAIN") + url_for('play_experience', game_id=game_id),
+            cancel_url=os.getenv("DOMAIN") + url_for('demo_experience', game_id=game_id),
+        )
+        return redirect(checkout_session.url, code=303)
+    except Exception as e:
+        print(f"Error al crear sesión: {e}")
+        return "Error al procesar el pago.", 500
+
+@app.route("/webhook", methods=["POST"])
+def webhook():
+    payload = request.get_data()
+    sig_header = request.headers.get('STRIPE_SIGNATURE')
+    endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except Exception as e:
+        # Error de validación (firma incorrecta, etc)
+        return jsonify(success=False), 400
+
+    # Si el pago se completó correctamente
+    if event['type'] == 'checkout.session.completed':
+        session_obj = event['data']['object']
+        game_id = session_obj.get('metadata', {}).get('game_id')
+        
+        if game_id:
+            # Buscamos la experiencia y la marcamos como pagada
+            exp = Experience.query.get(game_id)
+            if exp:
+                exp.is_paid = True
+                db.session.commit()
+                print(f"💰 ¡PAGO CONFIRMADO! Juego {game_id} activado.")
+
+    return jsonify(success=True)
 
 if __name__ == "__main__":
     with app.app_context():

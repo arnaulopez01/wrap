@@ -12,21 +12,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
     
     <style>
-        /* Animaciones de entrada */
-        .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(20px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-        
-        .animate-shake { animation: shake 0.4s ease-in-out; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
-        }
-
-        /* Configuración del Layout para que el fondo del tema ocupe todo */
         body {
             min-height: 100vh;
             display: flex;
@@ -34,75 +19,124 @@
             justify-content: center;
             margin: 0;
             overflow-x: hidden;
-            /* El background-gradient viene de theme.css */
         }
 
-        /* Marca de agua sutil para Demo */
         .watermark {
             position: fixed;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 8rem;
-            font-weight: 900;
+            font-size: 8rem; font-weight: 900;
             color: rgba(0, 0, 0, 0.03);
-            pointer-events: none;
-            z-index: 0;
-            white-space: nowrap;
-            text-transform: uppercase;
+            pointer-events: none; z-index: 0;
+            white-space: nowrap; text-transform: uppercase;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Botón de compra: Blanco y Negro */
+        .btn-buy-no-purple {
+            background-color: white !important;
+            color: black !important;
+        }
+        
+        .btn-buy-no-purple:hover {
+            background-color: #f1f5f9 !important;
+            color: black !important;
+            transform: translateY(-2px);
+        }
+
+        /* Alineación del input */
+        #player-answer {
+            text-align: left !important;
+            padding-left: 1.5rem !important;
+        }
+
+        /* Ocultar paneles laterales en pantallas pequeñas */
+        @media (max-width: 1024px) {
+            .side-panel { display: none; }
+        }
+
+        /* Animación para resaltar el nivel actual en la guía */
+        .current-level-item {
+            border-left: 3px solid #fbbf24;
+            padding-left: 8px;
+            background: rgba(251, 191, 36, 0.1);
         }
     </style>
 </head>
-<body class="theme-default">
+<body class="theme-default relative">
 
     {% if is_demo %}
     <div class="watermark">VISTA PREVIA</div>
-    <div class="fixed top-0 left-0 w-full bg-amber-500 text-black text-[10px] font-bold uppercase py-1 text-center z-50 tracking-widest shadow-lg">
-        Modo Demo: El regalo final está bloqueado
+    
+    <div class="fixed top-0 left-0 w-full bg-amber-500 text-black text-[10px] font-bold uppercase py-2 text-center z-50 tracking-widest shadow-lg">
+        <i class="fa-solid fa-eye mr-2"></i> Modo Demo: Vista de Creador
     </div>
+
+    <aside class="side-panel fixed right-8 top-1/2 -translate-y-1/2 w-64 glass-panel p-8 rounded-[2rem] z-20 text-center space-y-6 animate-fade-in">
+        <div class="space-y-1">
+            <div class="text-[10px] font-black uppercase tracking-widest opacity-50">Precio Final</div>
+            <div class="text-3xl font-black">1.99€</div>
+        </div>
+        <a href="{{ url_for('pay', game_id=game_id) }}" 
+           class="btn-buy-no-purple block w-full py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all shadow-xl active:scale-95">
+            <i class="fa-solid fa-cart-shopping mr-2"></i> Comprar Ahora
+        </a>
+    </aside>
     {% endif %}
 
     <div id="game-container" class="max-w-md w-full glass-card p-8 rounded-[3rem] shadow-2xl relative z-10 mx-4 transition-all duration-500">
-        
-        <div id="theme-icon" class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-2xl flex items-center justify-center shadow-xl border border-white/10" 
-             style="background-color: var(--primary)">
+        <div id="theme-icon" class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-2xl flex items-center justify-center shadow-xl border border-white/10" style="background-color: var(--primary)">
             <i class="fa-solid fa-star text-white"></i>
         </div>
 
-        <div id="quiz-area">
-            <div class="flex items-center justify-center min-h-[300px]">
-                <i class="fa-solid fa-circle-notch animate-spin text-3xl opacity-20"></i>
-            </div>
-        </div>
+        <div id="quiz-area"></div>
 
         <div id="reward-area" class="hidden text-center space-y-8 animate-fade-in py-6">
             <div class="space-y-2">
                 <i class="fa-solid fa-circle-check text-green-500 text-5xl mb-4"></i>
                 <h2 class="text-3xl font-black uppercase tracking-tighter">¡LOGRADO!</h2>
-                <p class="opacity-60 font-medium">Has superado todos los niveles.</p>
             </div>
-
             <div class="relative p-8 bg-white/5 rounded-3xl border-2 border-dashed" style="border-color: var(--accent)">
-                <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-inherit px-4 text-[10px] font-bold uppercase tracking-widest" style="color: var(--accent)">Tu Regalo</span>
-                <span id="final-gift" class="text-2xl font-bold block"></span>
+                <div id="gift-content">
+                    {% if is_demo %}
+                    <span class="text-xl font-bold blur-md select-none">CONTENIDO BLOQUEADO</span>
+                    <a href="{{ url_for('pay', game_id=game_id) }}" class="block text-purple-400 text-[10px] font-black uppercase mt-4 hover:underline">Comprar para ver</a>
+                    {% else %}
+                    <span id="final-gift" class="text-2xl font-bold block"></span>
+                    {% endif %}
+                </div>
             </div>
-
-            <button onclick="location.reload()" class="opacity-40 text-xs font-bold uppercase tracking-widest hover:opacity-100 transition-opacity">
-                Ver de nuevo
-            </button>
         </div>
     </div>
+
+    {% if is_demo %}
+    <div class="lg:hidden fixed bottom-6 right-6 left-6 z-40 flex flex-col gap-3">
+        <div id="mobile-answer-hint" class="bg-black/80 backdrop-blur-md text-amber-400 text-[10px] font-bold px-6 py-3 rounded-2xl border border-white/10 shadow-xl animate-fade-in text-center">
+            </div>
+        <a href="{{ url_for('pay', game_id=game_id) }}" class="flex items-center justify-center gap-3 bg-white text-black px-8 py-4 rounded-full shadow-2xl active:scale-95 transition-all font-black uppercase text-sm">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Comprar</span>
+        </a>
+    </div>
+    {% endif %}
 
     <script src="{{ url_for('static', filename='js/player.js') }}"></script>
     <script>
         try {
+            // Datos del backend
             const dataFromServer = {{ game_data | safe }};
-            const giftFromServer = "{{ real_gift }}";
+            const giftFromServer = "{{ real_gift if real_gift else '' }}";
             const isDemo = {{ 'true' if is_demo else 'false' }};
             
+            // Inicializar motor
             initPlayer(dataFromServer, giftFromServer, isDemo);
         } catch (e) {
-            console.error("Error:", e);
+            console.error("Error inicializando Player:", e);
         }
     </script>
 </body>
