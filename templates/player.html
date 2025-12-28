@@ -80,7 +80,7 @@
     <aside class="side-panel fixed right-8 top-1/2 -translate-y-1/2 w-64 glass-panel p-8 rounded-[2rem] z-20 text-center space-y-6 animate-fade-in">
         <div class="space-y-1">
             <div class="text-[10px] font-black uppercase tracking-widest opacity-50">Precio Final</div>
-            <div class="text-3xl font-black">1.99€</div>
+            <div class="text-3xl font-black">2,49€</div>
         </div>
         <a href="{{ url_for('pay', game_id=game_id) }}" 
            class="btn-buy-no-purple block w-full py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all shadow-xl active:scale-95">
@@ -116,8 +116,6 @@
 
     {% if is_demo %}
     <div class="lg:hidden fixed bottom-6 right-6 left-6 z-40 flex flex-col gap-3">
-        <div id="mobile-answer-hint" class="bg-black/80 backdrop-blur-md text-amber-400 text-[10px] font-bold px-6 py-3 rounded-2xl border border-white/10 shadow-xl animate-fade-in text-center">
-            </div>
         <a href="{{ url_for('pay', game_id=game_id) }}" class="flex items-center justify-center gap-3 bg-white text-black px-8 py-4 rounded-full shadow-2xl active:scale-95 transition-all font-black uppercase text-sm">
             <i class="fa-solid fa-cart-shopping"></i>
             <span>Comprar</span>

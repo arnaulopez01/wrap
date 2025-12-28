@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Wrap | Demo Interactiva</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .watermark {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 8rem; font-weight: 900;
+            color: rgba(0, 0, 0, 0.03);
+            pointer-events: none; z-index: 0;
+            white-space: nowrap; text-transform: uppercase;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #player-answer {
+            text-align: left !important;
+            padding-left: 1.5rem !important;
+        }
+
+        .demo-badge {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            background: rgba(139, 92, 246, 0.2);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #a78bfa;
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body class="theme-default relative">
+
+    <div class="watermark">DEMO ESTRATEGIA</div>
+    
+    <div class="demo-badge">
+        <i class="fa-solid fa-play mr-2"></i> Estás probando una experiencia demo
+    </div>
+
+    <div id="game-container" class="max-w-md w-full glass-card p-8 rounded-[3rem] shadow-2xl relative z-10 mx-4 transition-all duration-500">
+        <div id="theme-icon" class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-2xl flex items-center justify-center shadow-xl border border-white/10" style="background-color: var(--primary)">
+            <i class="fa-solid fa-lightbulb text-white"></i>
+        </div>
+
+        <div id="quiz-area"></div>
+
+        <div id="reward-area" class="hidden text-center space-y-8 animate-fade-in py-6">
+            <div class="space-y-2">
+                <i class="fa-solid fa-trophy text-yellow-500 text-5xl mb-4"></i>
+                <h2 class="text-3xl font-black uppercase tracking-tighter">¡Demo Completada!</h2>
+                <p class="text-gray-400 text-sm">Así es como tu destinatario verá su regalo.</p>
+            </div>
+            
+            <div class="relative p-8 bg-white/5 rounded-3xl border-2 border-dashed" style="border-color: var(--accent)">
+                <div id="gift-content">
+                    <span class="text-xl font-bold block">🎁 ¡Aquí iría tu regalo real!</span>
+                    <p class="text-xs text-gray-500 mt-4 uppercase tracking-widest font-bold">Fin de la Experiencia</p>
+                </div>
+            </div>
+
+            <div class="pt-4">
+                <a href="/" class="text-purple-400 hover:text-purple-300 text-sm font-bold transition-colors">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Volver al inicio
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/player.js') }}"></script>
+    <script>
+        try {
+            // Cargamos la data directamente desde el JSON de la plantilla de lógica
+            // En Flask, asegúrate de pasar 'game_data' cargando el archivo json
+            const dataFromServer = {{ game_data | safe }};
+            
+            // Regalo ficticio para la demo
+            const giftFromServer = "Un viaje sorpresa a París (Ejemplo)";
+            
+            // En la demo, isDemo es false para que permita ver el final sin panel de pago
+            const isDemo = false; 
+            
+            // Inicializar motor de juego
+            initPlayer(dataFromServer, giftFromServer, isDemo);
+        } catch (e) {
+            console.error("Error inicializando la Demo:", e);
+        }
+    </script>
+</body>
+</html>

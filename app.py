@@ -225,6 +225,18 @@ def save_experience():
     db.session.commit()
     return jsonify({"success": True})
 
+@app.route('/demo/default')
+def demo():
+    # Ruta al archivo de la plantilla de lógica
+    json_path = os.path.join(app.static_folder, 'plantillas', 'logica.json')
+    
+    with open(json_path, 'r', encoding='utf-8') as f:
+        game_data = json.load(f)
+    
+    return render_template('demo.html', 
+                           game_data=json.dumps(game_data), # Pasamos el JSON como string
+                           is_demo=False) # False para que sea jugable hasta el final
+
 @app.route("/demo/<game_id>")
 def demo_experience(game_id):
     exp = Experience.query.get_or_404(game_id)
@@ -258,7 +270,7 @@ def pay(game_id):
                     'product_data': {
                         'name': f'Acceso Total: {exp.game_data.get("title", "Tu Experiencia")}',
                     },
-                    'unit_amount': 199, # 1.99€ (puedes cambiarlo)
+                    'unit_amount': 249, # 2.49€ (puedes cambiarlo)
                 },
                 'quantity': 1,
             }],
