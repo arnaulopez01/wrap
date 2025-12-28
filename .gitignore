@@ -2,3 +2,4 @@
 /venv
 prompts.txt
 docker-compose.yml
+/__pycache__
