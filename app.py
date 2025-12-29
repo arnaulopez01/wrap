@@ -1,9 +1,11 @@
+# ==========================================================================
+# SECCIÓN 1: IMPORTACIONES Y CONFIGURACIÓN INICIAL
+# ==========================================================================
 import os
 import json
 import re
 import uuid
 from datetime import datetime
-# Añadimos render_template_string para el formulario de acceso rápido
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, render_template_string
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
@@ -11,28 +13,30 @@ from google import genai
 from google.genai import types
 import stripe
 
-# Importamos los prompts optimizados desde tu archivo externo
+# Importación de prompts externos
 from prompts import PRODUCT_PROMPTS
 
+# Inicialización de entorno y aplicación
 load_dotenv()
-
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_KEY", "dw_genz_fast_2025")
 
+# Configuración de servicios de terceros
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
-# --- CONFIGURACIÓN DE BASE DE DATOS ---
+# ==========================================================================
+# SECCIÓN 2: CONFIGURACIÓN DE BASE DE DATOS Y MODELOS
+# ==========================================================================
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# --- CONFIGURACIÓN GEMINI (SDK v1.0+) ---
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-MODEL_NAME = "gemini-2.5-flash" 
-
-# --- MODELO DE DATOS ---
 class Experience(db.Model):
+    """
+    Representa la entidad de una experiencia de juego en la base de datos.
+    Almacena configuración visual, datos del juego y estado de transacción.
+    """
     __tablename__ = 'experiences'
     
     id = db.Column(db.String(8), primary_key=True)
@@ -44,11 +48,20 @@ class Experience(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     finalized_at = db.Column(db.DateTime, nullable=True)
 
-# --- SISTEMA DE CONTROL DE ACCESO ---
+# ==========================================================================
+# SECCIÓN 3: CONFIGURACIÓN DE IA (GEMINI SDK)
+# ==========================================================================
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+MODEL_NAME = "gemini-2.5-flash" 
 
+# ==========================================================================
+# SECCIÓN 4: SISTEMA DE CONTROL DE ACCESO
+# ==========================================================================
 @app.route("/acceso", methods=["GET", "POST"])
 def acceso_privado():
-    """Página simple para pedir el código antes de entrar al creador"""
+    """
+    Gestiona el acceso restringido al creador mediante un código de validación.
+    """
     error = None
     if request.method == "POST":
         codigo = request.form.get("codigo")
@@ -58,7 +71,6 @@ def acceso_privado():
         else:
             error = "Código incorrecto. Inténtalo de nuevo."
     
-    # HTML simple para el acceso (puedes moverlo a un archivo .html si prefieres)
     return render_template_string('''
         <!DOCTYPE html>
         <html>
@@ -84,17 +96,19 @@ def acceso_privado():
         </html>
     ''', error=error)
 
-# --- RUTAS DE NAVEGACIÓN ---
-
+# ==========================================================================
+# SECCIÓN 5: RUTAS DE NAVEGACIÓN Y CREACIÓN
+# ==========================================================================
 @app.route("/")
 def landing():
-    """Página de inicio"""
+    """Renderiza la página de inicio pública."""
     return render_template("landing.html")
 
 @app.route("/start")
 def start_creation():
-    """Genera un nuevo juego y redirige al creador (PROTEGIDO)"""
-    # Verificación de seguridad
+    """
+    Crea una nueva instancia de juego con valores iniciales y redirige al editor.
+    """
     if not session.get('autorizado'):
         return redirect(url_for('acceso_privado'))
 
@@ -130,8 +144,9 @@ def start_creation():
 
 @app.route("/creator/<game_id>")
 def creator(game_id):
-    """Carga el editor (PROTEGIDO)"""
-    # Verificación de seguridad
+    """
+    Carga el editor de experiencias para un ID específico.
+    """
     if not session.get('autorizado'):
         return redirect(url_for('acceso_privado'))
 
@@ -139,11 +154,14 @@ def creator(game_id):
     session['current_game_id'] = game_id
     return render_template("creator.html", initial_data=exp.game_data, game_id=game_id)
 
-# --- CORE IA (PROTEGIDO) ---
-
+# ==========================================================================
+# SECCIÓN 6: LÓGICA CORE DE IA (CHAT)
+# ==========================================================================
 @app.route("/chat", methods=["POST"])
 def chat():
-    # Verificación de seguridad también en la API del chat
+    """
+    Procesa la interacción del usuario con Gemini para modificar el JSON del juego.
+    """
     if not session.get('autorizado'):
         return jsonify({"reply": "No autorizado"}), 403
 
@@ -204,10 +222,12 @@ def chat():
         print(f"IA ERROR: {e}")
         return jsonify({"reply": "Vaya, algo ha fallado en la matriz."}), 500
 
-# --- PERSISTENCIA Y VISTAS DE JUGADOR (Estas las dejamos públicas para que se pueda ver el resultado) ---
-
+# ==========================================================================
+# SECCIÓN 7: PERSISTENCIA Y VISTAS DEL JUGADOR
+# ==========================================================================
 @app.route("/save_experience", methods=["POST"])
 def save_experience():
+    """Guarda los cambios manuales o el estado final de una experiencia."""
     data = request.json
     game_id = session.get('current_game_id') or data.get('game_id')
     
@@ -227,41 +247,46 @@ def save_experience():
 
 @app.route('/demo/default')
 def demo():
-    # Ruta al archivo de la plantilla de lógica
+    """Carga una demo jugable desde un archivo de plantilla estático."""
     json_path = os.path.join(app.static_folder, 'plantillas', 'logica.json')
     
     with open(json_path, 'r', encoding='utf-8') as f:
         game_data = json.load(f)
     
     return render_template('demo.html', 
-                           game_data=json.dumps(game_data), # Pasamos el JSON como string
-                           is_demo=False) # False para que sea jugable hasta el final
+                           game_data=json.dumps(game_data), 
+                           is_demo=False)
 
 @app.route("/demo/<game_id>")
 def demo_experience(game_id):
+    """Muestra la versión de previsualización (demo) de una experiencia específica."""
     exp = Experience.query.get_or_404(game_id)
     return render_template("player.html", 
-                         game_data=json.dumps(exp.game_data), 
-                         is_demo=True, 
-                         game_id=game_id)
+                           game_data=json.dumps(exp.game_data), 
+                           is_demo=True, 
+                           game_id=game_id)
 
 @app.route("/experience/<game_id>")
 def play_experience(game_id):
+    """Renderiza la experiencia final para el jugador (si ha sido pagada)."""
     exp = Experience.query.get_or_404(game_id)
     if not exp.is_paid:
         return redirect(url_for('demo_experience', game_id=game_id))
     
     return render_template("player.html", 
-                         game_data=json.dumps(exp.game_data), 
-                         real_gift=exp.real_gift, 
-                         is_demo=False)
+                           game_data=json.dumps(exp.game_data), 
+                           real_gift=exp.real_gift, 
+                           is_demo=False)
 
+# ==========================================================================
+# SECCIÓN 8: INTEGRACIÓN DE PAGOS (STRIPE)
+# ==========================================================================
 @app.route("/pay/<game_id>")
 def pay(game_id):
+    """Crea una sesión de Checkout de Stripe para activar una experiencia."""
     exp = Experience.query.get_or_404(game_id)
     
     try:
-        # Creamos la sesión de Checkout
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
@@ -270,12 +295,11 @@ def pay(game_id):
                     'product_data': {
                         'name': f'Acceso Total: {exp.game_data.get("title", "Tu Experiencia")}',
                     },
-                    'unit_amount': 249, # 2.49€ (puedes cambiarlo)
+                    'unit_amount': 249, 
                 },
                 'quantity': 1,
             }],
             mode='payment',
-            # Metadatos: Clave para que el webhook sepa qué juego activar
             metadata={'game_id': game_id},
             success_url=os.getenv("DOMAIN") + url_for('play_experience', game_id=game_id),
             cancel_url=os.getenv("DOMAIN") + url_for('demo_experience', game_id=game_id),
@@ -287,6 +311,7 @@ def pay(game_id):
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
+    """Recibe las notificaciones de eventos de Stripe (confirmación de pago)."""
     payload = request.get_data()
     sig_header = request.headers.get('STRIPE_SIGNATURE')
     endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
@@ -296,16 +321,13 @@ def webhook():
             payload, sig_header, endpoint_secret
         )
     except Exception as e:
-        # Error de validación (firma incorrecta, etc)
         return jsonify(success=False), 400
 
-    # Si el pago se completó correctamente
     if event['type'] == 'checkout.session.completed':
         session_obj = event['data']['object']
         game_id = session_obj.get('metadata', {}).get('game_id')
         
         if game_id:
-            # Buscamos la experiencia y la marcamos como pagada
             exp = Experience.query.get(game_id)
             if exp:
                 exp.is_paid = True
@@ -314,6 +336,9 @@ def webhook():
 
     return jsonify(success=True)
 
+# ==========================================================================
+# SECCIÓN 9: ARRANQUE DE LA APLICACIÓN
+# ==========================================================================
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
