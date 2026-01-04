@@ -148,8 +148,23 @@
     </div>
 
     <script>
+        // 1. Recogemos los datos que nos manda Flask
         window.serverData = {{ initial_data | tojson | safe }};
         window.currentGameId = "{{ game_id }}";
+
+        // 2. [CRÍTICO] Guardamos el ID en el navegador para recuperarlo después
+        if (window.currentGameId) {
+            localStorage.setItem('dw_active_session', window.currentGameId);
+            console.log("✅ Sesión guardada:", window.currentGameId);
+        }
+
+        // 3. Opcional: Evitar cierre accidental
+        window.addEventListener('beforeunload', function (e) {
+            if (!window.isNavigatingToPay) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
     </script>
     
     <script src="{{ url_for('static', filename='js/creator.js') }}"></script>
