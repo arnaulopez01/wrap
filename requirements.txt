@@ -5,3 +5,5 @@ requests
 flask-sqlalchemy
 psycopg2-binary
 stripe
+qrcode[pil]
+sendgrid
