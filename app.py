@@ -304,7 +304,7 @@ def share_game(game_id):
     exp = Experience.query.get_or_404(game_id)
     
     # Construimos enlace absoluto
-    domain = os.getenv("DOMAIN", "http://localhost:5000")
+    domain = os.getenv("DOMAIN_SHARE", "http://localhost:5000")
     final_link = f"{domain}{url_for('play_experience', game_id=game_id)}"
     
     qr_b64 = None
@@ -322,7 +322,7 @@ def share_game(game_id):
 @app.route("/pay/<game_id>")
 def pay(game_id):
     exp = Experience.query.get_or_404(game_id)
-    domain = os.getenv("DOMAIN", "http://localhost:5000")
+    domain = os.getenv("DOMAIN_SHARE", "http://localhost:5000")
     
     try:
         checkout_session = stripe.checkout.Session.create(
@@ -378,7 +378,7 @@ def webhook():
                 print(f"💰 PAGO OK: {game_id} | Email: {customer_email}")
 
                 # B. Preparar Datos para Email
-                domain = os.getenv("DOMAIN", "http://localhost:5000")
+                domain = os.getenv("DOMAIN_SHARE", "http://localhost:5000")
                 final_link = f"{domain}{url_for('play_experience', game_id=game_id)}"
                 qr_b64 = generate_qr_base64(final_link)
                 title = exp.game_data.get("title", "Tu Experiencia")

@@ -1,0 +1,10 @@
+PSQL:
+
+    docker exec -it id psql -U user -d dwdb
+
+
+ESTAT PAGAT:
+
+    UPDATE experiences SET is_paid = TRUE WHERE id = 'TU_ID_AQUI';
+
+    UPDATE experiences SET is_paid = TRUE WHERE real_gift = 'Escoltar narrador';
